@@ -381,6 +381,9 @@ Delivered in current state:
 - local Compose validates the end-to-end Slice 1 path through `elowen-api` and `elowen-ui`
 
 ### Slice 2 - Device Presence and Execution Eligibility
+Status:
+- completed on 2026-03-22
+
 Outcome:
 - The primary local machine registers as an edge device
 - The orchestrator can determine whether the device is available for work
@@ -396,6 +399,12 @@ Primary capabilities:
 - repo allowlist
 - availability probe and response
 - device record persistence
+
+Delivered in current state:
+- `elowen-edge` self-registers against `elowen-api` and renews its presence on a heartbeat loop
+- `elowen-api` persists device metadata and exposes device list/detail endpoints
+- availability probes flow over NATS request-reply using a per-device subject
+- local Compose validates the primary device registration and probe path end to end
 
 ### Slice 3 - Job Creation and Dispatch
 Outcome:
@@ -614,12 +623,12 @@ Definition of done:
 
 ## 19. Next Deliverable
 
-Implement `Slice 2 - Device Presence and Execution Eligibility`.
+Implement `Slice 3 - Job Creation and Dispatch`.
 
 Primary outputs:
 
-- device registration path in `elowen-edge`
-- device persistence and lookup in `elowen-api`
-- shared device contracts in `elowen-platform/contracts`
-- availability probe and response flow over the platform runtime
-- Compose-validated local presence for the primary development machine
+- job creation from thread context in `elowen-api`
+- job records and lifecycle persistence in Postgres
+- dispatch contracts and NATS subjects for edge delivery
+- a minimal jobs surface in the UI
+- Compose-validated dispatch from the orchestrator toward the registered primary device

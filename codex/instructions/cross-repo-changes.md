@@ -30,6 +30,7 @@ When possible, make cross-repo changes in this order:
 - If Compose or multi-service behavior changes, verify it from the workspace root.
 - On Windows, use the MSVC environment when validating Rust services locally.
 - Keep Rust Docker base images aligned across service repos when dependency MSRV changes.
+- When introducing NATS subjects, record the subject naming convention in workspace docs so later slices reuse the same transport boundary.
 
 ## Release Intent
 
