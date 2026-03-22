@@ -435,6 +435,9 @@ Delivered in current state:
 - local Compose validates the end-to-end path from thread to persisted dispatched job on the primary device
 
 ### Slice 4 - Local Execution Loop
+Status:
+- completed on 2026-03-22
+
 Outcome:
 - Edge agent accepts a dispatched job, creates a worktree, runs Codex, and emits lifecycle events
 - The orchestrator and UI show real execution progress
@@ -452,6 +455,13 @@ Primary capabilities:
 - Codex wrapper
 - event publishing and persistence
 - job detail view
+
+Delivered in current state:
+- `elowen-edge` claims one active job at a time, creates a mounted git worktree, and writes request metadata into the worktree
+- `elowen-edge` publishes lifecycle events over NATS for acceptance, worktree creation, start, completion, and failure
+- `elowen-api` consumes job lifecycle events, persists them to `job_events`, and advances the `jobs` status model beyond dispatch
+- `elowen-ui` now polls and displays a job detail pane with the persisted event stream for the selected thread job
+- the default execution wrapper is simulated, with an explicit configuration path for a future external Codex command
 
 ### Slice 5 - Results, Summaries, and Approval Gate
 Outcome:
@@ -513,7 +523,7 @@ Primary capabilities:
 ## 11. First End-to-End Slice Definition
 
 Target slice:
-- `Slice 4 - Local Execution Loop`, extended through the minimum completion path from `Slice 5`
+- `Slice 5 - Results, Summaries, and Approval Gate`
 
 Definition of done:
 
@@ -633,12 +643,12 @@ Definition of done:
 
 ## 19. Next Deliverable
 
-Implement `Slice 4 - Local Execution Loop`.
+Implement `Slice 5 - Results, Summaries, and Approval Gate`.
 
 Primary outputs:
 
-- edge-side job acceptance and active lease management
-- worktree creation for a dispatched job
-- Codex invocation from the edge agent
-- job lifecycle event publishing and persistence beyond dispatch
-- UI visibility into live execution state for a running job
+- execution result and failure classification surfaces
+- generated job summaries and result metadata
+- approval request and resolution persistence
+- inline approval controls in the UI
+- a Compose-validated post-execution result and approval path
