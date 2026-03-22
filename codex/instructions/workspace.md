@@ -20,9 +20,12 @@ These instructions apply across the Elowen workspace unless a service repository
 ## Current Platform Decisions
 
 - Slice 0 is complete.
-- Slice 1 is the active next slice.
+- Slice 1 is complete.
+- Slice 2 is the active next slice.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
+- Local Windows Rust validation may require loading `vcvars64.bat` before `cargo check`.
+- Service Dockerfiles should stay on a Rust base image version that satisfies the current dependency MSRV across the workspace.
 
 ## Git Model
 

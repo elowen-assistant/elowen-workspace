@@ -356,7 +356,7 @@ Deliverables:
 
 ### Slice 1 - Threads and Conversation Surface
 Status:
-- active next slice
+- completed on 2026-03-22
 
 Outcome:
 - User can create a thread, post messages, and view thread history in the UI
@@ -373,6 +373,12 @@ Primary capabilities:
 - thread list and detail views
 - polling update loop
 - persisted thread/message model
+
+Delivered in current state:
+- `elowen-api` exposes persisted thread and message endpoints backed by Postgres migrations
+- `elowen-ui` provides thread list, thread detail, thread creation, and message posting against the live API
+- `elowen-platform/contracts` includes a `threads.proto` draft for thread and message payloads
+- local Compose validates the end-to-end Slice 1 path through `elowen-api` and `elowen-ui`
 
 ### Slice 2 - Device Presence and Execution Eligibility
 Outcome:
@@ -608,12 +614,12 @@ Definition of done:
 
 ## 19. Next Deliverable
 
-Implement `Slice 1 - Threads and Conversation Surface`.
+Implement `Slice 2 - Device Presence and Execution Eligibility`.
 
 Primary outputs:
 
-- thread and message API surface in `elowen-api`
-- persisted thread/message migrations derived from the shared schema draft
-- thread list and thread detail shell in `elowen-ui`
-- polling path between `elowen-ui` and `elowen-api`
-- contract cleanup in `elowen-platform/contracts` for thread and message payloads
+- device registration path in `elowen-edge`
+- device persistence and lookup in `elowen-api`
+- shared device contracts in `elowen-platform/contracts`
+- availability probe and response flow over the platform runtime
+- Compose-validated local presence for the primary development machine

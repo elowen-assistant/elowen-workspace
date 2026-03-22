@@ -28,6 +28,8 @@ When possible, make cross-repo changes in this order:
 - Validate each changed child repository on its own.
 - Then validate the integrated workspace state from `elowen-workspace`.
 - If Compose or multi-service behavior changes, verify it from the workspace root.
+- On Windows, use the MSVC environment when validating Rust services locally.
+- Keep Rust Docker base images aligned across service repos when dependency MSRV changes.
 
 ## Release Intent
 
