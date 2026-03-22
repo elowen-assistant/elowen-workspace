@@ -1,0 +1,15 @@
+[submodule "elowen-api"]
+	path = elowen-api
+	url = https://github.com/elowen-assistant/elowen-api.git
+[submodule "elowen-ui"]
+	path = elowen-ui
+	url = https://github.com/elowen-assistant/elowen-ui.git
+[submodule "elowen-edge"]
+	path = elowen-edge
+	url = https://github.com/elowen-assistant/elowen-edge.git
+[submodule "elowen-notes"]
+	path = elowen-notes
+	url = https://github.com/elowen-assistant/elowen-notes.git
+[submodule "elowen-platform"]
+	path = elowen-platform
+	url = https://github.com/elowen-assistant/elowen-platform.git
