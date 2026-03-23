@@ -26,7 +26,7 @@ These instructions apply across the Elowen workspace unless a service repository
 - Slice 4 is complete.
 - Slice 5 is complete.
 - Slice 6 is complete.
-- Slice 7 is the active next slice.
+- Slice 7 is complete.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
 - Local Windows Rust validation may require loading `vcvars64.bat` before `cargo check`.
@@ -42,6 +42,9 @@ These instructions apply across the Elowen workspace unless a service repository
 - Slice 6 keeps note creation, revisioning, and retrieval inside `elowen-notes`, with `elowen-api` consuming that service over HTTP.
 - Slice 6 related-note retrieval for a thread includes notes promoted from jobs that belong to that thread.
 - Slice 6 includes an explicit responsive/interactivity correction for the UI shell so thread/job workflows remain usable in the containerized deployment.
+- Slice 7 adds durable `correlation_id` propagation across jobs, job events, and edge lifecycle messages.
+- Slice 7 enables structured JSON logs through `ELOWEN_LOG_FORMAT=json` in the Rust services.
+- Slice 7 platform docs live in `elowen-platform/docs/operations.md`, and the Kubernetes migration base lives in `elowen-platform/k8s/base`.
 
 ## Git Model
 

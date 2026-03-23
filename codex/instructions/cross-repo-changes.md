@@ -34,6 +34,7 @@ When possible, make cross-repo changes in this order:
 - Current shared subjects include `elowen.devices.availability.probe.{device_id}` for request-reply probes, `elowen.jobs.dispatch.{device_id}` for job delivery, and `elowen.jobs.events` for edge lifecycle events.
 - For job-lifecycle slices, validate the full path from job creation through edge events, persisted job detail, and approval resolution if an approval gate is present.
 - For notes slices, validate both scopes: note promotion/retrieval from the job view and related-note visibility from the parent thread view.
+- For hardening slices, validate that the same `correlation_id` is visible in the API response, persisted `job_events`, and edge/API logs.
 
 ## Release Intent
 

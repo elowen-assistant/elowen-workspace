@@ -514,6 +514,9 @@ Delivered in current state:
 - local Compose validates note promotion and retrieval without reintroducing the old Trunk overlay failure mode
 
 ### Slice 7 - Hardening and Platform Maturity
+Status:
+- completed on 2026-03-23
+
 Outcome:
 - The v1 stack is observable, supportable, and ready for broader use
 - The path from Compose to Kubernetes is explicit
@@ -532,12 +535,20 @@ Primary capabilities:
 - operational docs
 - Kubernetes migration assets
 
+Delivered in current state:
+- `elowen-api`, `elowen-edge`, and `elowen-notes` support structured JSON logging through `ELOWEN_LOG_FORMAT=json`
+- `elowen-api` now creates a durable `correlation_id` for each job and persists it on both `jobs` and `job_events`
+- `elowen-edge` propagates the same `correlation_id` through dispatch handling and lifecycle event publishing
+- `elowen-ui` surfaces the `correlation_id` in job detail and event history for audit/debug work
+- `elowen-platform/docs/operations.md` documents runtime health, log shape, troubleshooting, and audit lookup flow
+- `elowen-platform/k8s/base` provides a concrete Kustomize base mirroring the current Compose topology
+
 ---
 
 ## 11. First End-to-End Slice Definition
 
 Target slice:
-- `Slice 6 - Notes Promotion and Retrieval`
+- `Slice 7 - Hardening and Platform Maturity`
 
 Definition of done:
 
@@ -657,11 +668,9 @@ Definition of done:
 
 ## 19. Next Deliverable
 
-Implement `Slice 6 - Notes Promotion and Retrieval`.
+Slice set `0` through `7` is now complete.
 
 Primary outputs:
-
-- note retrieval against the canonical notes service
-- note promotion from thread/job context into ArangoDB-backed notes
-- note references surfaced back into thread and job workflows
-- a Compose-validated notes retrieval and promotion path
+- structured logging and correlation-aware audit surfaces
+- operational documentation for the local/runtime stack
+- Kubernetes migration assets that mirror the Compose deployment shape
