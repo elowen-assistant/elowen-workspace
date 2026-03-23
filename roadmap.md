@@ -543,12 +543,88 @@ Delivered in current state:
 - `elowen-platform/docs/operations.md` documents runtime health, log shape, troubleshooting, and audit lookup flow
 - `elowen-platform/k8s/base` provides a concrete Kustomize base mirroring the current Compose topology
 
+### Slice 8 - Global Jobs Surface
+Status:
+- completed on 2026-03-23
+
+Outcome:
+- Jobs are visible outside the thread-local context
+- Users can navigate directly from the global jobs surface into the owning thread and job detail
+
+Sub-projects:
+- `elowen-ui`
+- `elowen-api`
+- `elowen-workspace`
+
+Primary capabilities:
+- lightweight global jobs list in the UI
+- cross-thread job selection
+- job-driven navigation back into thread detail
+
+Delivered in current state:
+- `elowen-ui` now renders a lightweight global jobs list alongside the thread list
+- selecting a job from the global jobs list opens the owning thread and the selected job detail
+- the UI continues to poll the global jobs list from `GET /api/v1/jobs`
+
+### Slice 9 - Build and Test Execution
+Status:
+- pending
+
+Outcome:
+- Execution reports reflect real project build and test results instead of scaffold placeholders
+
+Sub-projects:
+- `elowen-edge`
+- `elowen-api`
+- `elowen-ui`
+- `elowen-platform`
+
+Primary capabilities:
+- repo-aware build/test command execution
+- structured build/test result capture
+- surfaced build/test output in job detail
+
+### Slice 10 - Edge Sandbox Enforcement
+Status:
+- pending
+
+Outcome:
+- The edge runtime enforces explicit execution boundaries instead of relying only on worktree isolation
+
+Sub-projects:
+- `elowen-edge`
+- `elowen-platform`
+- `elowen-workspace`
+
+Primary capabilities:
+- sandbox policy definition
+- runtime command and filesystem boundary enforcement
+- auditable sandbox failures in job events and logs
+
+### Slice 11 - Notes Revision Lineage
+Status:
+- pending
+
+Outcome:
+- Promoted knowledge preserves richer authorship and revision ancestry
+
+Sub-projects:
+- `elowen-notes`
+- `elowen-api`
+- `elowen-platform/contracts`
+- `elowen-platform/db`
+
+Primary capabilities:
+- revision ancestry with `previous_revision_id`
+- explicit source references
+- authored-by metadata on note revisions
+
 ---
 
 ## 11. First End-to-End Slice Definition
 
 Target slice:
-- `Slice 7 - Hardening and Platform Maturity`
+- `Slice 8 - Global Jobs Surface`
 
 Definition of done:
 
@@ -663,14 +739,18 @@ Definition of done:
 6. `Slice 5 - Results, Summaries, and Approval Gate`
 7. `Slice 6 - Notes Promotion and Retrieval`
 8. `Slice 7 - Hardening and Platform Maturity`
+9. `Slice 8 - Global Jobs Surface`
+10. `Slice 9 - Build and Test Execution`
+11. `Slice 10 - Edge Sandbox Enforcement`
+12. `Slice 11 - Notes Revision Lineage`
 
 ---
 
 ## 19. Next Deliverable
 
-Slice set `0` through `7` is now complete.
+Slice set `0` through `8` is now complete.
 
 Primary outputs:
-- structured logging and correlation-aware audit surfaces
-- operational documentation for the local/runtime stack
-- Kubernetes migration assets that mirror the Compose deployment shape
+- lightweight global jobs list in the UI
+- direct job-to-thread navigation from the global jobs surface
+- explicit follow-on slices for build/test execution, sandbox enforcement, and notes revision lineage
