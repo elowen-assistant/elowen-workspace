@@ -1,4 +1,4 @@
-# Personal Assistant / Local Codex System Implementation Plan
+# Personal Assistant / Local Codex System Delivery Roadmap
 
 ## 1. Purpose
 
@@ -329,6 +329,39 @@ Document collections:
 
 ## 10. Vertical Slice Roadmap
 
+### Current real delivery status as of 2026-04-01
+
+- The local job-driven execution loop is implemented through Slice 9 and the Rust service repos currently pass `cargo check`.
+- The current product works as a thread plus jobs system, not yet as a chat-native assistant.
+- `elowen-ui` supports threads, manual job creation, job monitoring, approvals, and notes.
+- `elowen-api` persists threads, messages, jobs, job events, approvals, and device state, and routes jobs over NATS.
+- `elowen-edge` registers, answers availability probes, creates worktrees, runs the execution wrapper, runs validation, and publishes lifecycle events.
+- The default edge execution path is still simulated unless an external Codex command is configured explicitly.
+- Compose is the only validated deployment path today. The Kubernetes assets are migration scaffolding, not production-ready operations.
+- Thread messages currently persist only. They do not yet trigger job creation, dispatch, or assistant replies in-thread.
+- Edge sandbox enforcement is still pending, so execution safety still relies primarily on repo allowlists and worktree isolation.
+
+### True MVP definition
+
+Elowen reaches the true MVP only when the following end-to-end path works reliably:
+
+1. The orchestration layer can be deployed to a VPS.
+2. The edge agent can be installed and run as a standalone service on a local laptop.
+3. The user can interact with Elowen through the web UI as a chat surface.
+4. A chat request can cause the orchestrator to send a coding task to the local laptop.
+5. The laptop runs a real Codex-backed execution path, not the simulated default wrapper.
+6. The edge reports result and execution state back to the orchestrator.
+7. The orchestrator posts a clear assistant response back into the same thread confirming completion or failure.
+
+### Gap between current delivery and the true MVP
+
+- Interaction gap: the current UX is still manual and job-driven. Posting a thread message does not trigger work.
+- Execution gap: real external Codex execution is configurable, but it is not yet the default validated runtime path.
+- Deployment gap: the orchestrator stack is validated locally with Compose, but not yet documented and hardened as a VPS deployment.
+- Device gap: the edge agent runs well in the shared local workspace/container model, but not yet as a documented standalone laptop install.
+- Reporting gap: completion is visible in job detail and approvals, but not yet reflected back into the thread as an assistant reply.
+- Safety gap: sandbox enforcement is still pending and remains on the MVP-critical path.
+
 ### Slice 0 - Workspace and Runtime Foundation
 Status:
 - completed on 2026-03-22
@@ -439,7 +472,7 @@ Status:
 - completed on 2026-03-22
 
 Outcome:
-- Edge agent accepts a dispatched job, creates a worktree, runs Codex, and emits lifecycle events
+- Edge agent accepts a dispatched job, creates a worktree, runs the Codex wrapper, and emits lifecycle events
 - The orchestrator and UI show real execution progress
 
 Sub-projects:
@@ -625,9 +658,101 @@ Primary capabilities:
 - explicit source references
 - authored-by metadata on note revisions
 
+### Slice 12 - VPS Orchestrator Deployment
+Status:
+- pending
+
+Outcome:
+- The orchestrator stack can run on a VPS with documented environment setup, persistence, and externally reachable endpoints
+
+Sub-projects:
+- `elowen-platform`
+- `elowen-api`
+- `elowen-ui`
+- `elowen-notes`
+
+Primary capabilities:
+- remote environment and secrets configuration
+- deployable Compose or equivalent VPS topology
+- persistent data volumes and restart behavior
+- reverse proxy / public endpoint documentation
+- remote health check and operational validation flow
+
+### Slice 13 - Standalone Laptop Edge Install
+Status:
+- pending
+
+Outcome:
+- The edge agent can be installed on a laptop and connected to the remote orchestrator without relying on the shared local Compose topology
+
+Sub-projects:
+- `elowen-edge`
+- `elowen-platform`
+- `elowen-workspace`
+
+Primary capabilities:
+- standalone edge configuration flow
+- laptop workspace path configuration
+- service or foreground run instructions
+- remote API and NATS connectivity
+- device registration validation against the remote orchestrator
+
+### Slice 14 - Real Codex Execution Path
+Status:
+- pending
+
+Outcome:
+- A dispatched job runs through a supported external Codex command as the primary validated execution path
+
+Sub-projects:
+- `elowen-edge`
+- `elowen-platform`
+- `codex`
+
+Primary capabilities:
+- external Codex command configuration and validation
+- preflight checks for Codex availability
+- execution log capture for the real runner path
+- documented local setup for the laptop agent host
+
+### Slice 15 - Chat-To-Job Bridging
+Status:
+- pending
+
+Outcome:
+- A user can ask for work in a thread and have Elowen turn that request into a dispatched coding job without a separate manual job form as the primary interaction model
+
+Sub-projects:
+- `elowen-api`
+- `elowen-ui`
+- `elowen-edge`
+
+Primary capabilities:
+- thread message interpretation into job intent
+- explicit job creation policy from chat requests
+- in-thread visibility into the linked job lifecycle
+- reduced dependence on the separate manual create-job workflow
+
+### Slice 16 - In-Thread Assistant Completion Replies
+Status:
+- pending
+
+Outcome:
+- The thread itself reflects execution progress and completion so the UI behaves like an interactive assistant, not just a job console
+
+Sub-projects:
+- `elowen-api`
+- `elowen-ui`
+
+Primary capabilities:
+- assistant message persistence for execution milestones
+- completion and failure summaries posted back into the owning thread
+- clear thread-level acknowledgement when work has been accomplished
+- durable linkage between assistant replies and the underlying job record
+
 ---
 
-## 11. First End-to-End Slice Definition
+## 11. Current Delivered End-to-End Flow
 
 Target slice:
 - `Slice 9 - Build and Test Execution`
@@ -636,12 +761,12 @@ Definition of done:
 
 1. Create thread
 2. Send coding request
-3. Create job
+3. Manually create job from the thread
 4. Probe device
 5. Dispatch job
 6. Edge agent accepts
 7. Worktree is created
-8. Codex runs
+8. Codex wrapper runs
 9. Tests run
 10. Job completes
 11. Summary is generated
@@ -649,7 +774,23 @@ Definition of done:
 
 ---
 
-## 12. Orchestrator Rules
+## 12. True MVP End-to-End Definition
+
+Definition of done:
+
+1. Deploy the orchestrator stack to a VPS.
+2. Install and start the edge agent on the local laptop.
+3. Open the web UI and start an interactive thread.
+4. Post a coding request in the thread.
+5. Elowen converts that request into a dispatched job for the laptop.
+6. The laptop accepts the job, creates a worktree, and runs real Codex.
+7. Validation runs and the edge reports lifecycle events back to the orchestrator.
+8. The orchestrator persists the result and posts an assistant reply into the same thread.
+9. The user can see in the chat that the task was accomplished, with job detail available as supporting context.
+
+---
+
+## 13. Orchestrator Rules
 
 ### Owns
 - state transitions
@@ -670,7 +811,7 @@ Definition of done:
 
 ---
 
-## 13. Context Bundle
+## 14. Context Bundle
 
 ### Always
 - instructions
@@ -688,15 +829,15 @@ Definition of done:
 
 ---
 
-## 14. Edge Agent Rules
+## 15. Edge Agent Rules
 
 ### Must
 - validate repo
 - create worktree
-- run Codex
+- run the Codex wrapper and, for the true MVP path, a configured external Codex command
 - publish events
 - run tests
-- enforce sandbox
+- enforce sandbox once Slice 10 lands
 
 ### Must not
 - run arbitrary commands
@@ -705,17 +846,18 @@ Definition of done:
 
 ---
 
-## 15. UI Scope (v1)
+## 16. UI Scope (v1)
 
 - thread list
 - thread detail
 - job cards
 - approvals
 - job detail page
+- future MVP path: thread-native execution replies
 
 ---
 
-## 16. Observability
+## 17. Observability
 
 - structured logs
 - correlation IDs
@@ -724,7 +866,7 @@ Definition of done:
 
 ---
 
-## 17. Codex Build Guidelines
+## 18. Codex Build Guidelines
 
 - small vertical slices
 - explicit behavior
@@ -735,7 +877,7 @@ Definition of done:
 
 ---
 
-## 18. Slice Delivery Order
+## 19. Slice Delivery Order
 
 1. `Slice 0 - Workspace and Runtime Foundation`
 2. `Slice 1 - Threads and Conversation Surface`
@@ -749,17 +891,32 @@ Definition of done:
 10. `Slice 9 - Build and Test Execution`
 11. `Slice 10 - Edge Sandbox Enforcement`
 12. `Slice 11 - Notes Revision Lineage`
+13. `Slice 12 - VPS Orchestrator Deployment`
+14. `Slice 13 - Standalone Laptop Edge Install`
+15. `Slice 14 - Real Codex Execution Path`
+16. `Slice 15 - Chat-To-Job Bridging`
+17. `Slice 16 - In-Thread Assistant Completion Replies`
 
 ---
 
-## 19. Next Deliverable
+## 20. Next Deliverable
 
-Slice set `0` through `9` is now complete.
+Slice set `0` through `9` is complete for the local job-driven system, but the true MVP is not complete yet.
 
-Primary outputs:
-- repo-owned build/test command execution through `.assistant/config.toml`
-- real build/test results in persisted job execution reports
-- explicit follow-on slices for sandbox enforcement and notes revision lineage
+Current delivered baseline:
+- local Compose stack for the orchestrator topology
+- persisted threads, messages, jobs, approvals, notes, and job events
+- device registration, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
+- manual job creation from a thread and UI visibility into execution progress
+- optional external Codex integration path behind explicit edge configuration
 
-Reminder after slices `10` and `11`:
-- review and define the direct interaction model for thread messages versus job-driven execution, including whether Elowen should auto-reply in-thread without an explicit job
+True MVP critical path from here:
+- `Slice 10 - Edge Sandbox Enforcement`
+- `Slice 12 - VPS Orchestrator Deployment`
+- `Slice 13 - Standalone Laptop Edge Install`
+- `Slice 14 - Real Codex Execution Path`
+- `Slice 15 - Chat-To-Job Bridging`
+- `Slice 16 - In-Thread Assistant Completion Replies`
+
+Important note:
+- `Slice 11 - Notes Revision Lineage` remains valuable, but it is not on the critical path to the true MVP defined above.
