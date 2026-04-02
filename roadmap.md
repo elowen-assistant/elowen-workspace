@@ -660,7 +660,7 @@ Primary capabilities:
 
 ### Slice 12 - VPS Orchestrator Deployment
 Status:
-- pending
+- complete
 
 Outcome:
 - The orchestrator stack can run on a VPS with documented environment setup, persistence, and externally reachable endpoints
@@ -677,6 +677,11 @@ Primary capabilities:
 - persistent data volumes and restart behavior
 - reverse proxy / public endpoint documentation
 - remote health check and operational validation flow
+
+Delivered notes:
+- the orchestrator stack now runs on a public VPS over HTTPS with documented env templates, reverse proxying, and persistent service topology
+- `elowen-ui` uses same-origin API routing for VPS deployment instead of assuming a local `:8080` backend
+- a laptop-hosted edge has been validated end to end against the remote orchestrator, including remote job dispatch from the UI and lifecycle reporting back to the VPS
 
 ### Slice 13 - Standalone Laptop Edge Install
 Status:
@@ -752,7 +757,7 @@ Delivered notes:
 
 ### Slice 16 - In-Thread Assistant Completion Replies
 Status:
-- pending
+- complete
 
 Outcome:
 - The thread itself reflects execution progress and completion so the UI behaves like an interactive assistant, not just a job console
@@ -767,27 +772,32 @@ Primary capabilities:
 - clear thread-level acknowledgement when work has been accomplished
 - durable linkage between assistant replies and the underlying job record
 
+Delivered notes:
+- `elowen-api` now persists assistant-role thread messages for job milestones, keyed by durable lifecycle status markers so replies are not duplicated on re-consume
+- threads now show assistant progress when work starts and an assistant completion or failure summary when execution finishes
+- the live VPS flow has been validated end to end with thread-visible assistant replies around a real Codex-executed laptop job
+
 ---
 
 ## 11. Current Delivered End-to-End Flow
 
 Target slice:
-- `Slice 9 - Build and Test Execution`
+- `Slice 16 - In-Thread Assistant Completion Replies`
 
 Definition of done:
 
-1. Create thread
-2. Send coding request
-3. Manually create job from the thread
-4. Probe device
-5. Dispatch job
-6. Edge agent accepts
-7. Worktree is created
-8. Codex wrapper runs
-9. Tests run
-10. Job completes
-11. Summary is generated
-12. Push approval is proposed
+1. Deploy the orchestrator stack to a VPS.
+2. Install and start the edge agent on the local laptop.
+3. Open the web UI and start an interactive thread.
+4. Post a coding request in the thread.
+5. Elowen converts that request into a dispatched job for the laptop.
+6. The laptop accepts the job, creates a worktree, and runs real Codex.
+7. Validation runs and the edge reports lifecycle events back to the orchestrator.
+8. The orchestrator persists the result and posts assistant replies into the same thread for both start and completion.
+9. The UI shows the task as accomplished in the chat, with job detail and push approval available as supporting context.
+
+Current gap relative to the full true MVP bar:
+- sandbox enforcement is still pending in `Slice 10 - Edge Sandbox Enforcement`
 
 ---
 
@@ -918,7 +928,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `9` is complete for the local job-driven system, but the true MVP is not complete yet.
+Slice set `0` through `16` is complete for the user-visible VPS-to-laptop MVP flow, but one hardening slice remains on the critical path.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -931,7 +941,6 @@ Current delivered baseline:
 
 True MVP critical path from here:
 - `Slice 10 - Edge Sandbox Enforcement`
-- `Slice 16 - In-Thread Assistant Completion Replies`
 
 Important note:
 - `Slice 11 - Notes Revision Lineage` remains valuable, but it is not on the critical path to the true MVP defined above.
