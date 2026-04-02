@@ -728,7 +728,7 @@ Delivered notes:
 
 ### Slice 15 - Chat-To-Job Bridging
 Status:
-- pending
+- complete
 
 Outcome:
 - A user can ask for work in a thread and have Elowen turn that request into a dispatched coding job without a separate manual job form as the primary interaction model
@@ -743,6 +743,12 @@ Primary capabilities:
 - explicit job creation policy from chat requests
 - in-thread visibility into the linked job lifecycle
 - reduced dependence on the separate manual create-job workflow
+
+Delivered notes:
+- `elowen-api` now exposes an explicit chat-dispatch endpoint that stores the user message, creates the linked job, and writes a thread-visible system acknowledgement
+- `elowen-ui` now routes the primary chat composer through that bridge, with explicit repo and optional title/base-branch routing fields instead of relying on the separate manual job form
+- the manual job form remains available only as an advanced fallback
+- the chat-driven dispatch path has been validated end to end against the deployed VPS orchestrator, with the linked job executed on the laptop through the real Codex runner
 
 ### Slice 16 - In-Thread Assistant Completion Replies
 Status:
@@ -919,13 +925,12 @@ Current delivered baseline:
 - VPS-hosted orchestrator deployment over HTTPS
 - standalone laptop edge runtime with env-file based startup and documented Windows launch/install helpers
 - real Codex CLI execution path with startup preflight and persisted runner artifacts
+- chat-driven job dispatch from a thread without relying on the separate manual job form
 - persisted threads, messages, jobs, approvals, notes, and job events
 - device registration, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
-- manual job creation from a thread and UI visibility into execution progress
 
 True MVP critical path from here:
 - `Slice 10 - Edge Sandbox Enforcement`
-- `Slice 15 - Chat-To-Job Bridging`
 - `Slice 16 - In-Thread Assistant Completion Replies`
 
 Important note:
