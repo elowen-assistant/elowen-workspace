@@ -29,8 +29,13 @@ These instructions apply across the Elowen workspace unless a service repository
 - Slice 7 is complete.
 - Slice 8 is complete.
 - Slice 9 is complete.
-- Slice 10 is the next planned slice.
-- Slice 11 is planned after Slice 10.
+- Slice 10 is complete.
+- Slice 11 is complete.
+- Slice 12 is complete.
+- Slice 13 is complete.
+- Slice 14 is complete.
+- Slice 15 is complete.
+- Slice 16 is complete.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
 - Local Windows Rust validation may require loading `vcvars64.bat` before `cargo check`.

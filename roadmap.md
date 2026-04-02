@@ -331,15 +331,15 @@ Document collections:
 
 ### Current verified delivery status as of 2026-04-02
 
-- Slice set `0` through `9` and `12` through `16` is implemented on `main`.
+- Slice set `0` through `16` is implemented on `main`.
 - The current product now behaves as a thread-native assistant surface backed by jobs, not only as a manual job console.
 - `elowen-ui` provides thread chat, chat-dispatch routing fields, global jobs, job detail, approvals, and notes, while keeping the manual job form only as an advanced fallback.
 - `elowen-api` persists user, system, and assistant thread messages; exposes `/api/v1/threads/{thread_id}/chat-dispatch`; creates linked jobs from chat requests; and posts assistant lifecycle replies back into the owning thread.
-- `elowen-edge` registers the device, creates per-job git worktrees, supports a real `codex exec` runner with startup preflight and captured runner artifacts, runs repo-owned validation from `.assistant/config.toml`, and publishes lifecycle events plus approval gating.
-- `elowen-platform` documents both the VPS deployment path and the standalone laptop edge path, including same-origin HTTPS routing for the UI/API split and Windows startup helpers for the laptop runtime.
+- `elowen-edge` registers the device, creates per-job git worktrees, supports a real `codex exec` runner with startup preflight and captured runner artifacts, runs repo-owned validation from `.assistant/config.toml`, and now enforces a workspace sandbox boundary around runtime working directories and validation command launch policy.
+- `elowen-platform` documents both the VPS deployment path and the standalone laptop edge path, including same-origin HTTPS routing for the UI/API split, Windows startup helpers for the laptop runtime, and the edge sandbox expectation.
+- `elowen-notes` now preserves note revision ancestry and authorship metadata, while `elowen-api` revises the current promoted job note instead of always creating a parallel note record.
 - The VPS-to-laptop flow has been validated as the current user-visible baseline, while `elowen-platform/k8s/base` remains migration scaffolding rather than a production deployment target.
-- The true-MVP-critical gap is now concentrated in `Slice 10 - Edge Sandbox Enforcement`.
-- `Slice 11 - Notes Revision Lineage` is still pending, but it is no longer on the critical path to the true MVP.
+- The true MVP slice set is now complete on `main`.
 
 ### True MVP definition
 
@@ -355,9 +355,9 @@ Elowen reaches the true MVP only when the following end-to-end path works reliab
 
 ### Gap between current delivery and the true MVP
 
-- Safety gap: `Slice 10 - Edge Sandbox Enforcement` remains the only MVP-critical blocker.
-- Today the edge runtime still relies on repo allowlists, configured workspace/worktree roots, and Codex-argument validation rather than a stronger runtime sandbox around filesystem access and spawned commands.
-- `Slice 11 - Notes Revision Lineage` remains pending for richer note ancestry and authorship, but it does not block the true MVP path.
+- There are no remaining slice-level blockers to the true MVP defined here.
+- The edge sandbox is now implemented as a workspace-scoped execution boundary with sandbox-classified failures surfaced through the existing job lifecycle model.
+- Notes promotion now preserves revision ancestry, authored-by metadata, and explicit source references for the current revision path.
 - Kubernetes migration assets are still intentionally non-MVP scaffolding and are not part of the release bar for the true MVP defined here.
 
 ### Slice 0 - Workspace and Runtime Foundation
@@ -623,7 +623,7 @@ Delivered in current state:
 
 ### Slice 10 - Edge Sandbox Enforcement
 Status:
-- pending
+- complete
 
 Outcome:
 - The edge runtime enforces explicit execution boundaries instead of relying only on worktree isolation
@@ -638,14 +638,15 @@ Primary capabilities:
 - runtime command and filesystem boundary enforcement
 - auditable sandbox failures in job events and logs
 
-Current partial state:
-- `elowen-edge` already constrains work to allowed repos, configured workspace/worktree roots, and per-job git worktrees
-- the real Codex path validates and normalizes configured Codex CLI arguments before invocation
-- validation commands still execute as ordinary child processes from the worktree without a stronger sandbox boundary or dedicated sandbox-failure event type
+Delivered notes:
+- `elowen-edge` now writes a per-job sandbox policy artifact under `.elowen-sandbox/` inside each worktree and redirects temp/cache state into that boundary
+- validation working directories and repo-relative command paths must resolve inside the job worktree, which closes the earlier `working_dir` escape path
+- shell-style validation launches such as `powershell`, `cmd`, `sh`, and `bash` are blocked, and sandbox-blocked runs now surface as failure class `sandbox`
+- `elowen-platform/contracts/proto/jobs.proto` now models `FAILURE_CLASS_SANDBOX`, and the laptop-edge docs describe the default workspace sandbox mode
 
 ### Slice 11 - Notes Revision Lineage
 Status:
-- pending
+- complete
 
 Outcome:
 - Promoted knowledge preserves richer authorship and revision ancestry
@@ -661,10 +662,11 @@ Primary capabilities:
 - explicit source references
 - authored-by metadata on note revisions
 
-Current partial state:
-- `elowen-notes` already stores note revisions and exposes `current_revision_id`, `version`, `source_kind`, and `source_id`
-- promoted notes already preserve a current revision document and source linkage for job-derived content
-- explicit revision ancestry, richer source-reference structure, and authored-by revision metadata are not yet modeled
+Delivered notes:
+- `elowen-notes` now stores `previous_revision_id`, `authored_by`, and explicit `source_references` on each note revision and returns them from note detail
+- note promotion supports revising an existing note by `note_id`, incrementing the revision version instead of always creating a new note document
+- `elowen-api` now reuses the latest promoted note for a job when present and records explicit source references for the job, owning thread, and current job summary
+- `elowen-platform/contracts/proto/notes.proto` and the notes bootstrap indexes now reflect the richer revision lineage model
 
 ### Slice 12 - VPS Orchestrator Deployment
 Status:
@@ -805,7 +807,7 @@ Definition of done:
 9. The UI shows the task as accomplished in the chat, with job detail and push approval available as supporting context.
 
 Current gap relative to the full true MVP bar:
-- sandbox enforcement is still pending in `Slice 10 - Edge Sandbox Enforcement`
+- none at the slice level; the true MVP bar described here is now implemented on `main`
 
 ---
 
@@ -936,7 +938,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `16` is complete for the user-visible VPS-to-laptop MVP flow, but one hardening slice remains on the critical path.
+Slice set `0` through `16` is complete, including the hardening and notes-lineage work that remained after the user-visible VPS-to-laptop MVP flow first landed.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -948,10 +950,10 @@ Current delivered baseline:
 - device registration, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
 
 True MVP critical path from here:
-- `Slice 10 - Edge Sandbox Enforcement`
+- no remaining slice-level blockers
 
 Important note:
-- `Slice 11 - Notes Revision Lineage` remains valuable, but it is not on the critical path to the true MVP defined above.
+- further work from here belongs in future enhancements, deployment hardening beyond the MVP bar, or new slices defined after this roadmap snapshot
 
 ---
 
