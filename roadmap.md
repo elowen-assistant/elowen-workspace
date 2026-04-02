@@ -332,6 +332,7 @@ Document collections:
 ### Current verified delivery status as of 2026-04-02
 
 - Slice set `0` through `16` is implemented on `main`.
+- The completed true-MVP path is now recorded as `Workflow #1`: thread-native request -> dispatched laptop job -> assistant reply back into the same thread.
 - The current product now behaves as a thread-native assistant surface backed by jobs, not only as a manual job console.
 - `elowen-ui` provides thread chat, chat-dispatch routing fields, global jobs, job detail, approvals, and notes, while keeping the manual job form only as an advanced fallback.
 - `elowen-api` persists user, system, and assistant thread messages; exposes `/api/v1/threads/{thread_id}/chat-dispatch`; creates linked jobs from chat requests; and posts assistant lifecycle replies back into the owning thread.
@@ -787,14 +788,84 @@ Delivered notes:
 - threads now show assistant progress when work starts and an assistant completion or failure summary when execution finishes
 - the live VPS flow has been validated end to end with thread-visible assistant replies around a real Codex-executed laptop job
 
+### Slice 17 - Conversational Orchestrator Replies
+Status:
+- planned
+
+Outcome:
+- A thread can receive direct assistant replies from the orchestrator without creating a laptop job by default
+
+Sub-projects:
+- `elowen-api`
+- `elowen-ui`
+- `codex`
+
+Primary capabilities:
+- orchestrator-side assistant reply path for normal chat
+- persisted conversational assistant messages without linked job records
+- reply context assembled from thread history, notes, and orchestrator state
+- model and runtime configuration for non-job assistant turns
+
+Scope notes:
+- add a thread chat endpoint distinct from chat-dispatch so `Workflow #2` does not reuse the job-creation path
+- preserve the current chat-dispatch route as the explicit `Workflow #1` execution entry point
+- conversational failures should surface in-thread without creating job or approval records
+
+### Slice 18 - Explicit Workflow Handoff
+Status:
+- planned
+
+Outcome:
+- Conversational chat can escalate visibly and intentionally into the existing job-backed execution workflow
+
+Sub-projects:
+- `elowen-api`
+- `elowen-ui`
+- `codex`
+
+Primary capabilities:
+- explicit handoff from conversation to execution
+- assistant-generated execution intent summary before dispatch
+- visible linkage from conversational turns to the created job
+- no silent creation of laptop jobs from ordinary chat
+
+Scope notes:
+- `Workflow #2` remains the default for normal conversation
+- `Workflow #1` remains the only path that creates real jobs, approvals, and push gates
+- handoff records should make it obvious which message or assistant plan caused the dispatch
+
+### Slice 19 - Conversational Context and Mode Visibility
+Status:
+- planned
+
+Outcome:
+- Conversational replies are grounded, and the UI makes conversational versus job-backed messages easy to distinguish
+
+Sub-projects:
+- `elowen-api`
+- `elowen-ui`
+- `elowen-notes`
+- `elowen-platform`
+
+Primary capabilities:
+- conversational context bundle from thread history, promoted notes, related jobs, and summaries
+- UI indicators for conversational replies versus execution milestones
+- source references or lightweight citations for grounded assistant replies where appropriate
+- conversation-first composer and thread affordances that coexist with explicit dispatch controls
+
+Scope notes:
+- `Workflow #2` should not depend on a laptop worktree
+- note retrieval for conversational grounding should reuse the existing notes service rather than introduce a separate memory system
+- thread transcripts should remain legible when a conversation escalates into a dispatched job
+
 ---
 
-## 11. Current Delivered End-to-End Flow
+## 11. Workflow #1 - Job Dispatch MVP
 
 Target slice:
 - `Slice 16 - In-Thread Assistant Completion Replies`
 
-Definition of done:
+Definition of done for `Workflow #1`:
 
 1. Deploy the orchestrator stack to a VPS.
 2. Install and start the edge agent on the local laptop.
@@ -933,6 +1004,9 @@ Definition of done:
 15. `Slice 14 - Real Codex Execution Path`
 16. `Slice 15 - Chat-To-Job Bridging`
 17. `Slice 16 - In-Thread Assistant Completion Replies`
+18. `Slice 17 - Conversational Orchestrator Replies`
+19. `Slice 18 - Explicit Workflow Handoff`
+20. `Slice 19 - Conversational Context and Mode Visibility`
 
 ---
 
@@ -952,14 +1026,42 @@ Current delivered baseline:
 True MVP critical path from here:
 - no remaining slice-level blockers
 
+Post-MVP slice plan from here:
+- `Slice 17 - Conversational Orchestrator Replies`
+- `Slice 18 - Explicit Workflow Handoff`
+- `Slice 19 - Conversational Context and Mode Visibility`
+
+Immediate next deliverable:
+- `Slice 17 - Conversational Orchestrator Replies`
+
 Important note:
-- further work from here belongs in future enhancements, deployment hardening beyond the MVP bar, or new slices defined after this roadmap snapshot
+- `Workflow #2` is now a defined post-MVP slice track rather than only a backlog note
+- broader future enhancements still remain outside this slice plan
 
 ---
 
 ## 21. Future Enhancements
 
-This section is the backlog for intended future work that is not on the current true-MVP critical path and is not already assigned to an active slice.
+This section tracks post-MVP work that is not on the true-MVP critical path. Some items below are now assigned to planned slices, while others remain backlog only.
+
+### Workflow #2 - Conversational Orchestrator Reply Path
+
+Definition of done:
+
+1. The user can post a normal conversational message in a thread without that message automatically becoming a dispatched laptop job.
+2. The orchestrator-side assistant can reply directly in the thread in a chatbot-style manner.
+3. The assistant can answer questions, clarify intent, discuss plans, and help the user decide whether execution is needed.
+4. The assistant can explicitly transition from `Workflow #2` into `Workflow #1` when the conversation turns into a real coding task.
+5. The thread makes it clear whether a reply came from conversational orchestrator mode or from a job-backed execution path.
+6. Existing approval and push gates remain tied to real jobs, not to conversational replies.
+
+Design constraints:
+
+- `Workflow #1` remains the execution workflow.
+- `Workflow #2` is conversational first and should not silently create jobs from ordinary chat.
+- Context for `Workflow #2` should default to thread history, notes, and orchestrator state rather than a laptop worktree.
+- When `Workflow #2` escalates into `Workflow #1`, the transition should be visible in the thread and result in a normal dispatched job record.
+- The current slice plan for `Workflow #2` is `Slice 17` through `Slice 19`.
 
 ### Candidate backlog
 
