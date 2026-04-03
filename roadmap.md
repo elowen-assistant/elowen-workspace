@@ -1083,12 +1083,17 @@ Definition of done:
 20. `Slice 19 - Conversational Context and Mode Visibility`
 21. `Slice 20 - Approval-Backed Push Execution`
 22. `Slice 21 - Conversational Execution Drafts`
+23. `Slice 22 - Read-Only Request Handling`
+24. `Slice 23 - Thread-Visible Final Job Result Message`
+25. `Slice 24 - Chat-Forward UI Redesign`
+26. `Slice 25 - Web UI Authentication`
+27. `Slice 26 - Parent-Directory Repository Discovery`
 
 ---
 
 ## 20. Next Deliverable
 
-Slice set `0` through `16` is complete, including the hardening and notes-lineage work that remained after the user-visible VPS-to-laptop MVP flow first landed.
+Slice set `0` through `21` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, and conversational execution drafts.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1103,17 +1108,22 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 20 - Approval-Backed Push Execution`
-- `Slice 21 - Conversational Execution Drafts`
+- `Slice 22 - Read-Only Request Handling`
+- `Slice 23 - Thread-Visible Final Job Result Message`
+- `Slice 24 - Chat-Forward UI Redesign`
+- `Slice 25 - Web UI Authentication`
+- `Slice 26 - Parent-Directory Repository Discovery`
 
 Immediate next deliverable:
-- `Slice 20 - Approval-Backed Push Execution`
+- `Slice 22 - Read-Only Request Handling`
 
-Immediate hardening focus inside Slice 20:
-- require or create a commit before the approval-backed push step so the pushed branch actually contains the job's work
+Immediate hardening focus inside Slice 22:
+- distinguish informational execution from change-oriented execution before dispatch
+- suppress durable repo mutations and push approvals for explicitly read-only requests
+- make the no-change expectation visible in drafts, job summaries, and thread replies
 
 Important note:
-- `Workflow #2` baseline is now live through `Slice 19`
+- `Workflow #2` baseline is now live through `Slice 21`
 - broader future enhancements still remain outside this slice plan
 
 ---
@@ -1157,26 +1167,31 @@ Design constraints:
   - Gap: broader non-coding tool surfaces and integrations are not yet part of the product flow.
   - Why it matters later: expanding the tool surface is part of turning the assistant from a coding orchestrator into a broader personal assistant platform.
 - Read-only request handling
+  - Assigned slice: `Slice 22 - Read-Only Request Handling`
   - Current state: conversational and job-backed flows can still converge on file edits and push gates when the underlying request was informational rather than change-oriented.
   - Gap: the system does not yet distinguish clearly enough between read-only repository investigation and requests that should result in durable file changes or pushed branches.
   - Why it matters later: users should not need to approve permanent repository mutations just to ask for information, explanation, or review of existing code.
   - Suggested future direction: add explicit read-only execution intent and approval suppression for informational requests, with transcript language that makes the no-change expectation visible before dispatch.
 - Parent-directory repository discovery
+  - Assigned slice: `Slice 26 - Parent-Directory Repository Discovery`
   - Current state: edge access control is built around explicitly listing allowed repository names per device.
   - Gap: there is no way to declare one or more parent directories and automatically expose all nested git repositories under those roots.
   - Why it matters later: maintaining a manual allowlist does not scale well once a laptop edge is meant to cover a broader working set of local projects.
   - Suggested future direction: let devices register trusted repository-root directories, discover nested repositories under those roots, and keep per-repo policy overlays for exceptions when tighter control is needed.
 - Web UI authentication
+  - Assigned slice: `Slice 25 - Web UI Authentication`
   - Current state: the deployed web UI assumes a trusted operator environment and does not enforce a real user authentication boundary.
   - Gap: there is no login, session management, or user-level access control protecting the thread, job, notes, and approval surfaces.
   - Why it matters later: once Elowen is exposed beyond a single trusted operator on a private deployment, the UI needs an explicit identity boundary before it can be treated as a real multi-user or internet-exposed product surface.
   - Suggested future direction: add a simple authenticated web session model first, then layer authorization rules for operational actions like dispatch, approval, notes promotion, and device management.
 - Chat-forward UI redesign
+  - Assigned slice: `Slice 24 - Chat-Forward UI Redesign`
   - Current state: the web UI exposes the right capabilities, but it still reads more like an operator console than a polished chat-first assistant product.
   - Gap: the primary surface is not yet optimized around a mobile-friendly messaging flow with a persistent composer, low-friction suggestion patterns, and secondary actions tucked behind a compact expandable menu.
   - Why it matters later: Workflow #2 is now the preferred default path, so the UI should feel closer to a high-quality messaging app than a job dashboard, while still preserving explicit access to dispatch, approvals, notes, and job detail.
   - Suggested future direction: redesign the shell around a generic messaging-app conversation pattern inspired by ChatGPT, Claude, and Google Messages, with progressive disclosure for operational controls; preserve clear capability cues, strong recovery paths, and accessibility/mobile ergonomics called out in external chatbot UX guidance.
 - Thread-visible final job result message
+  - Assigned slice: `Slice 23 - Thread-Visible Final Job Result Message`
   - Current state: the thread shows lifecycle milestones and summary-oriented assistant replies, but it does not reliably surface the final runner `last_message` as the primary completion artifact in chat.
   - Gap: the most direct textual result from a completed job is still easier to find in job detail than in the main transcript.
   - Why it matters later: for a chat-first product, the thread itself should carry the clearest final answer, especially when the runner's last message is the most useful high-signal explanation of what happened.
@@ -1185,3 +1200,8 @@ Design constraints:
   - Current state: the architecture keeps a Compose-first approach and an explicit upgrade path, but the working deployment is still Compose-based.
   - Gap: there is no validated Kubernetes deployment story for the current real system.
   - Why it matters later: Kubernetes is a scale and operability enhancement, not part of the true MVP path.
+- GitHub Actions runtime maintenance
+  - Current state: the new GHCR image-publish workflows are working, but the current third-party action versions still emit GitHub's Node 20 deprecation warning.
+  - Gap: the workflow dependencies should be upgraded to versions that explicitly support the newer GitHub-hosted runner JavaScript runtime.
+  - Priority: low. The workflows are functional now, and this is routine maintenance rather than a product blocker.
+  - Suggested future direction: refresh the checkout/buildx/login/metadata/build-push actions after the current deployment path settles, then rerun the image-publish path to confirm the warning is gone.
