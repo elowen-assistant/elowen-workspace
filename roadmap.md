@@ -1158,6 +1158,21 @@ Design constraints:
   - Gap: the system does not yet distinguish clearly enough between read-only repository investigation and requests that should result in durable file changes or pushed branches.
   - Why it matters later: users should not need to approve permanent repository mutations just to ask for information, explanation, or review of existing code.
   - Suggested future direction: add explicit read-only execution intent and approval suppression for informational requests, with transcript language that makes the no-change expectation visible before dispatch.
+- Parent-directory repository discovery
+  - Current state: edge access control is built around explicitly listing allowed repository names per device.
+  - Gap: there is no way to declare one or more parent directories and automatically expose all nested git repositories under those roots.
+  - Why it matters later: maintaining a manual allowlist does not scale well once a laptop edge is meant to cover a broader working set of local projects.
+  - Suggested future direction: let devices register trusted repository-root directories, discover nested repositories under those roots, and keep per-repo policy overlays for exceptions when tighter control is needed.
+- Web UI authentication
+  - Current state: the deployed web UI assumes a trusted operator environment and does not enforce a real user authentication boundary.
+  - Gap: there is no login, session management, or user-level access control protecting the thread, job, notes, and approval surfaces.
+  - Why it matters later: once Elowen is exposed beyond a single trusted operator on a private deployment, the UI needs an explicit identity boundary before it can be treated as a real multi-user or internet-exposed product surface.
+  - Suggested future direction: add a simple authenticated web session model first, then layer authorization rules for operational actions like dispatch, approval, notes promotion, and device management.
+- Chat-forward UI redesign
+  - Current state: the web UI exposes the right capabilities, but it still reads more like an operator console than a polished chat-first assistant product.
+  - Gap: the primary surface is not yet optimized around a mobile-friendly messaging flow with a persistent composer, low-friction suggestion patterns, and secondary actions tucked behind a compact expandable menu.
+  - Why it matters later: Workflow #2 is now the preferred default path, so the UI should feel closer to a high-quality messaging app than a job dashboard, while still preserving explicit access to dispatch, approvals, notes, and job detail.
+  - Suggested future direction: redesign the shell around a generic messaging-app conversation pattern inspired by ChatGPT, Claude, and Google Messages, with progressive disclosure for operational controls; preserve clear capability cues, strong recovery paths, and accessibility/mobile ergonomics called out in external chatbot UX guidance.
 - Kubernetes deployment path
   - Current state: the architecture keeps a Compose-first approach and an explicit upgrade path, but the working deployment is still Compose-based.
   - Gap: there is no validated Kubernetes deployment story for the current real system.
