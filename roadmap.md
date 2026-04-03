@@ -896,6 +896,15 @@ Scope notes:
 - approval should no longer mark a job complete before the gated push actually runs
 - the laptop edge should push from the existing worktree and publish its own success or failure outcome
 - job and thread surfaces should make the post-approval phase visible without obscuring the original execution summary
+- approval-backed push should only complete when the branch contains a meaningful commit to publish; pushing an uncommitted worktree state is not sufficient
+
+Delivered notes:
+- approval resolution now triggers a real edge-side post-approval push command instead of only recording approval in the API
+- the edge now publishes explicit `job.push_started` and `job.push_completed` lifecycle events, and the UI/thread surfaces show that phase clearly
+- live verification confirmed the branch ref is pushed to `origin` after approval
+
+Remaining gap:
+- the current approval-backed push path can still push a branch ref that points at `main` when the worktree changes were never committed, so Slice 20 remains open until commit-before-push is enforced
 
 ### Slice 21 - Conversational Execution Drafts
 Status:
@@ -1097,6 +1106,9 @@ Post-MVP slice plan from here:
 Immediate next deliverable:
 - `Slice 20 - Approval-Backed Push Execution`
 
+Immediate hardening focus inside Slice 20:
+- require or create a commit before the approval-backed push step so the pushed branch actually contains the job's work
+
 Important note:
 - `Workflow #2` baseline is now live through `Slice 19`
 - broader future enhancements still remain outside this slice plan
@@ -1141,6 +1153,11 @@ Design constraints:
   - Current state: the coding path is the primary supported execution model.
   - Gap: broader non-coding tool surfaces and integrations are not yet part of the product flow.
   - Why it matters later: expanding the tool surface is part of turning the assistant from a coding orchestrator into a broader personal assistant platform.
+- Read-only request handling
+  - Current state: conversational and job-backed flows can still converge on file edits and push gates when the underlying request was informational rather than change-oriented.
+  - Gap: the system does not yet distinguish clearly enough between read-only repository investigation and requests that should result in durable file changes or pushed branches.
+  - Why it matters later: users should not need to approve permanent repository mutations just to ask for information, explanation, or review of existing code.
+  - Suggested future direction: add explicit read-only execution intent and approval suppression for informational requests, with transcript language that makes the no-change expectation visible before dispatch.
 - Kubernetes deployment path
   - Current state: the architecture keeps a Compose-first approach and an explicit upgrade path, but the working deployment is still Compose-based.
   - Gap: there is no validated Kubernetes deployment story for the current real system.
