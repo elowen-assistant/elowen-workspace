@@ -929,6 +929,9 @@ Scope notes:
 - the assistant should stay conversational and editable until the user explicitly promotes the draft
 - this slice builds on the shipped `Workflow #2` baseline rather than replacing it
 
+Follow-up refinements:
+- tighten execution-draft title synthesis so generated draft titles are concise task labels rather than just echoing the first clause of the user's request
+
 ---
 
 ## 11. Workflow #1 - Job Dispatch MVP
@@ -1173,6 +1176,11 @@ Design constraints:
   - Gap: the primary surface is not yet optimized around a mobile-friendly messaging flow with a persistent composer, low-friction suggestion patterns, and secondary actions tucked behind a compact expandable menu.
   - Why it matters later: Workflow #2 is now the preferred default path, so the UI should feel closer to a high-quality messaging app than a job dashboard, while still preserving explicit access to dispatch, approvals, notes, and job detail.
   - Suggested future direction: redesign the shell around a generic messaging-app conversation pattern inspired by ChatGPT, Claude, and Google Messages, with progressive disclosure for operational controls; preserve clear capability cues, strong recovery paths, and accessibility/mobile ergonomics called out in external chatbot UX guidance.
+- Thread-visible final job result message
+  - Current state: the thread shows lifecycle milestones and summary-oriented assistant replies, but it does not reliably surface the final runner `last_message` as the primary completion artifact in chat.
+  - Gap: the most direct textual result from a completed job is still easier to find in job detail than in the main transcript.
+  - Why it matters later: for a chat-first product, the thread itself should carry the clearest final answer, especially when the runner's last message is the most useful high-signal explanation of what happened.
+  - Suggested future direction: when a job completes, render the final `last_message` directly into the thread transcript with clear visual treatment as the job's outcome message, while keeping deeper execution reports and summaries available as secondary detail.
 - Kubernetes deployment path
   - Current state: the architecture keeps a Compose-first approach and an explicit upgrade path, but the working deployment is still Compose-based.
   - Gap: there is no validated Kubernetes deployment story for the current real system.
