@@ -1191,6 +1191,7 @@ Design constraints:
   - Why it matters later: Workflow #2 is now the preferred default path, so the UI should feel closer to a high-quality messaging app than a job dashboard, while still preserving explicit access to dispatch, approvals, notes, and job detail.
   - Suggested future direction: redesign the shell around a generic messaging-app conversation pattern inspired by ChatGPT, Claude, and Google Messages, with progressive disclosure for operational controls; preserve clear capability cues, strong recovery paths, and accessibility/mobile ergonomics called out in external chatbot UX guidance.
   - Future note: repository selection in dispatch controls should become a select or searchable picker fed from orchestrator-known edge repositories, not a free-form text box that risks typos.
+  - Future note: the dedicated job browsing surface should likely become a separate screen from the primary chat/thread experience, so users who want to search and inspect jobs can do so without turning the main assistant view into a jobs console.
 - Thread-visible final job result message
   - Assigned slice: `Slice 23 - Thread-Visible Final Job Result Message`
   - Current state: the thread shows lifecycle milestones and summary-oriented assistant replies, but it does not reliably surface the final runner `last_message` as the primary completion artifact in chat.
