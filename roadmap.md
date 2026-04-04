@@ -1093,7 +1093,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `21` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, and conversational execution drafts.
+Slice set `0` through `24` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, and the first full chat-forward UI redesign pass.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1108,19 +1108,16 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 22 - Read-Only Request Handling`
-- `Slice 23 - Thread-Visible Final Job Result Message`
-- `Slice 24 - Chat-Forward UI Redesign`
 - `Slice 25 - Web UI Authentication`
 - `Slice 26 - Parent-Directory Repository Discovery`
 
 Immediate next deliverable:
-- `Slice 22 - Read-Only Request Handling`
+- `Slice 25 - Web UI Authentication`
 
-Immediate hardening focus inside Slice 22:
-- distinguish informational execution from change-oriented execution before dispatch
-- suppress durable repo mutations and push approvals for explicitly read-only requests
-- make the no-change expectation visible in drafts, job summaries, and thread replies
+Immediate hardening focus inside Slice 25:
+- add a real authenticated session boundary around the deployed web UI
+- keep thread/chat as the primary surface while constraining who can browse, dispatch, approve, and promote notes
+- establish a clean foundation for future authorization rules without disturbing the current single-operator flow
 
 Important note:
 - `Workflow #2` baseline is now live through `Slice 21`
@@ -1186,10 +1183,10 @@ Design constraints:
   - Suggested future direction: add a simple authenticated web session model first, then layer authorization rules for operational actions like dispatch, approval, notes promotion, and device management.
 - Chat-forward UI redesign
   - Assigned slice: `Slice 24 - Chat-Forward UI Redesign`
-  - Current state: the web UI exposes the right capabilities, but it still reads more like an operator console than a polished chat-first assistant product.
-  - Gap: the primary surface is not yet optimized around a mobile-friendly messaging flow with a persistent composer, low-friction suggestion patterns, and secondary actions tucked behind a compact expandable menu.
-  - Why it matters later: Workflow #2 is now the preferred default path, so the UI should feel closer to a high-quality messaging app than a job dashboard, while still preserving explicit access to dispatch, approvals, notes, and job detail.
-  - Suggested future direction: redesign the shell around a generic messaging-app conversation pattern inspired by ChatGPT, Claude, and Google Messages, with progressive disclosure for operational controls; preserve clear capability cues, strong recovery paths, and accessibility/mobile ergonomics called out in external chatbot UX guidance.
+  - Current state: the shipped UI now centers the thread/chat view, keeps the composer sticky and primary, moves secondary controls into folded context panels, and trims job-completion noise behind a disclosure.
+  - Remaining gap: the redesign still has follow-on polish opportunities around richer message-type differentiation, repository selection ergonomics, and a cleaner split between the primary chat surface and deeper operational browsing.
+  - Why it matters later: Workflow #2 is now the preferred default path, so future UI work should keep making Elowen feel like a high-quality messaging app while preserving deliberate access to operational tools.
+  - Suggested future direction: continue iterating on the generic messaging-app shell inspired by ChatGPT, Claude, and Google Messages, with stronger progressive disclosure, clearer completion/update semantics, and refined mobile ergonomics.
   - Future note: repository selection in dispatch controls should become a select or searchable picker fed from orchestrator-known edge repositories, not a free-form text box that risks typos.
   - Future note: the dedicated job browsing surface should likely become a separate screen from the primary chat/thread experience, so users who want to search and inspect jobs can do so without turning the main assistant view into a jobs console.
 - Thread-visible final job result message
