@@ -1089,6 +1089,7 @@ Definition of done:
 26. `Slice 25 - Web UI Authentication`
 27. `Slice 26 - Parent-Directory Repository Discovery`
 28. `Slice 27 - Material 3 System Alignment`
+29. `Slice 28 - Mutual Orchestrator And Edge Trust`
 
 ---
 
@@ -1110,6 +1111,7 @@ True MVP critical path from here:
 
 Post-MVP slice plan from here:
 - `Slice 27 - Material 3 System Alignment`
+- `Slice 28 - Mutual Orchestrator And Edge Trust`
 
 Immediate next deliverable:
 - `Slice 27 - Material 3 System Alignment`
@@ -1196,6 +1198,12 @@ Design constraints:
   - Gap: the app does not yet follow a full Material 3 token system, adaptive navigation model, component semantics, or motion/elevation guidance consistently.
   - Why it matters later: a dedicated alignment pass would make the UI more coherent across desktop/mobile states and reduce ad hoc styling drift as the product grows.
   - Suggested future direction: adopt a proper Material 3 design token layer, component mapping, adaptive navigation behavior, and edge-to-edge/mobile conventions in a dedicated slice instead of continuing to fold those structural changes into general UI cleanup.
+- Mutual orchestrator and edge trust
+  - Assigned slice: `Slice 28 - Mutual Orchestrator And Edge Trust`
+  - Current state: device registration is now more ergonomic, but long-lived machine trust still depends on ambient network trust and application-level assumptions rather than pinned cryptographic identity.
+  - Gap: an edge device cannot yet prove that it belongs to a specific orchestrator, and the orchestrator cannot yet prove that a registering device is one of its trusted enrolled machines.
+  - Why it matters later: a stronger trust model is required if edge registration should feel SSH-like instead of “reachable API plus accepted device id”.
+  - Suggested future direction: give the orchestrator its own long-term keypair, pin the orchestrator public key in edge config, issue or enroll per-edge keypairs, and move registration toward a mutual signed challenge flow over TLS so both sides verify identity before long-lived trust is established.
 - Thread-visible final job result message
   - Assigned slice: `Slice 23 - Thread-Visible Final Job Result Message`
   - Current state: the thread shows lifecycle milestones and summary-oriented assistant replies, but it does not reliably surface the final runner `last_message` as the primary completion artifact in chat.
