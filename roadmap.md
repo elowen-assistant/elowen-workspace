@@ -1094,7 +1094,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `25` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, and a real web UI authentication boundary.
+Slice set `0` through `26` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, and parent-directory repository discovery for edge registration.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1109,16 +1109,15 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 26 - Parent-Directory Repository Discovery`
 - `Slice 27 - Material 3 System Alignment`
 
 Immediate next deliverable:
-- `Slice 26 - Parent-Directory Repository Discovery`
+- `Slice 27 - Material 3 System Alignment`
 
-Immediate hardening focus inside Slice 26:
-- let the edge advertise one or more trusted parent directories instead of only a fixed repo allowlist
-- discover nested git repositories under those roots without relying on typo-prone manual repo entry
-- preserve explicit policy overlays for exceptions where a discovered repo should stay hidden or restricted
+Immediate hardening focus inside Slice 27:
+- adopt a proper Material 3 token layer instead of the current light visual borrowing
+- align adaptive navigation behavior across desktop, tablet, and mobile breakpoints
+- standardize component semantics, elevation, and motion so future UI changes stop drifting piecemeal
 
 Important note:
 - `Workflow #2` baseline is now live through `Slice 21`
@@ -1172,16 +1171,17 @@ Design constraints:
   - Suggested future direction: add explicit read-only execution intent and approval suppression for informational requests, with transcript language that makes the no-change expectation visible before dispatch.
 - Parent-directory repository discovery
   - Assigned slice: `Slice 26 - Parent-Directory Repository Discovery`
-  - Current state: edge access control is built around explicitly listing allowed repository names per device.
-  - Gap: there is no way to declare one or more parent directories and automatically expose all nested git repositories under those roots.
-  - Why it matters later: maintaining a manual allowlist does not scale well once a laptop edge is meant to cover a broader working set of local projects.
-  - Suggested future direction: let devices register trusted repository-root directories, discover nested repositories under those roots, and keep per-repo policy overlays for exceptions when tighter control is needed.
+  - Current state: devices can now register trusted parent directories and advertise discovered nested git repositories alongside any explicit per-repo overlay.
+  - Remaining gap: there is still no richer policy layer for per-root exclusions, hidden repositories, or UI-native repo picking.
+  - Why it matters later: discovery solves the typo-prone manual baseline, but broader operator ergonomics still depend on better policy controls and surfaced repo metadata.
+  - Suggested future direction: build on the shipped discovery path with per-root exclusions, device-side policy overrides, and UI controls that present discovered repositories directly.
 - Web UI authentication
   - Assigned slice: `Slice 25 - Web UI Authentication`
   - Current state: the shipped VPS stack now supports a real password-gated web session boundary backed by API-issued cookies and server-side session storage.
   - Remaining gap: the current model is still intentionally simple and does not yet distinguish between operators, permission levels, or external identity providers.
   - Why it matters later: the basic session wall is enough for a private operator deployment, but multi-user or internet-exposed operation still needs authorization and stronger identity management.
   - Suggested future direction: build on the current session layer with per-action authorization, better operator identity handling, and eventually external auth if the deployment model expands.
+  - Future note: replace the current shared-password session gate with a real authentication service so identity, session lifecycle, and operator management do not stay hand-rolled indefinitely.
 - Chat-forward UI redesign
   - Assigned slice: `Slice 24 - Chat-Forward UI Redesign`
   - Current state: the shipped UI now centers the thread/chat view, keeps the composer sticky and primary, moves secondary controls into folded context panels, trims job-completion noise behind a disclosure, and now includes a light Material 3-inspired pass for surfaces, controls, and visual hierarchy.
