@@ -19,44 +19,26 @@ These instructions apply across the Elowen workspace unless a service repository
 
 ## Current Platform Decisions
 
-- Slice 0 is complete.
-- Slice 1 is complete.
-- Slice 2 is complete.
-- Slice 3 is complete.
-- Slice 4 is complete.
-- Slice 5 is complete.
-- Slice 6 is complete.
-- Slice 7 is complete.
-- Slice 8 is complete.
-- Slice 9 is complete.
-- Slice 10 is complete.
-- Slice 11 is complete.
-- Slice 12 is complete.
-- Slice 13 is complete.
-- Slice 14 is complete.
-- Slice 15 is complete.
-- Slice 16 is complete.
+- Slices 0 through 28 are complete.
+- Slice 29 is in progress and currently focuses on SPA-style client state persistence plus authenticated SSE updates.
+- Slice 30 is the next planned slice and should add browser automation for UI layout, tap, scroll, auth, and realtime behavior.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.
 - Local Windows Rust validation may require loading `vcvars64.bat` before `cargo check`.
 - Service Dockerfiles should stay on a Rust base image version that satisfies the current dependency MSRV across the workspace.
-- Device registration is API-backed, while availability probes use NATS request-reply on `elowen.devices.availability.probe.{device_id}`.
+- VPS deploys should use GHCR prebuilt images and `docker compose pull && docker compose up -d`, not on-host Rust compilation.
+- Device registration is API-backed and can require signed edge proof against a pinned orchestrator key.
+- Availability probes use NATS request-reply on `elowen.devices.availability.probe.{device_id}`.
 - Job dispatch currently uses NATS publish-subscribe on `elowen.jobs.dispatch.{device_id}`.
 - Job lifecycle events currently use NATS publish-subscribe on `elowen.jobs.events`.
-- The edge runtime now creates mounted git worktrees under `/workspace/.elowen/worktrees` in Compose.
-- The Slice 4 execution wrapper defaults to a simulated runner until an external Codex command is configured.
-- The UI is served as a static production build behind nginx in Compose, not `trunk serve`.
-- Slice 5 persists execution reports, generated job summaries, and push approvals in the API database.
-- Slice 5 approval resolution is API-driven and surfaced inline in the UI job detail view.
-- Slice 6 keeps note creation, revisioning, and retrieval inside `elowen-notes`, with `elowen-api` consuming that service over HTTP.
-- Slice 6 related-note retrieval for a thread includes notes promoted from jobs that belong to that thread.
-- Slice 6 includes an explicit responsive/interactivity correction for the UI shell so thread/job workflows remain usable in the containerized deployment.
-- Slice 7 adds durable `correlation_id` propagation across jobs, job events, and edge lifecycle messages.
-- Slice 7 enables structured JSON logs through `ELOWEN_LOG_FORMAT=json` in the Rust services.
-- Slice 7 platform docs live in `elowen-platform/docs/operations.md`, and the Kubernetes migration base lives in `elowen-platform/k8s/base`.
-- Slice 8 adds a lightweight global jobs list in the UI that can select the owning thread and job detail from any thread context.
-- Slice 9 runs repo-owned build/test commands from `.assistant/config.toml` after Codex execution and persists the results into the job execution report.
-- After slices 10 and 11, review and define the direct interaction model for thread messages versus job-driven execution.
+- The edge runtime discovers nested git repositories under trusted parent roots and creates per-job worktrees under `.elowen/worktrees`.
+- The edge runs the real Codex CLI path, captures runner artifacts, runs validation, creates commits for mutating jobs, and waits for approval before push.
+- Read-only jobs should not create commits or push approvals when no repository changes are produced.
+- The UI is a client-side Leptos app served from a prebuilt image, not `trunk serve`.
+- The UI is chat-first, Material-inspired, and uses authenticated SSE plus targeted refreshes, with 30-second polling retained as fallback.
+- UI session auth is currently a shared-password gate backed by API-issued cookie sessions; a fuller auth service remains future work.
+- Notes creation, revisioning, and retrieval stay inside `elowen-notes`, with `elowen-api` consuming that service over HTTP.
+- Kubernetes assets remain migration scaffolding; Compose remains the active deployment model.
 
 ## Git Model
 

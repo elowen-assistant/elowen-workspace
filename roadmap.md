@@ -1108,10 +1108,13 @@ Current delivered baseline:
 - local Compose stack for the orchestrator topology
 - VPS-hosted orchestrator deployment over HTTPS
 - standalone laptop edge runtime with env-file based startup and documented Windows launch/install helpers
+- GHCR prebuilt images for VPS-hosted Rust services so the small VPS does not compile on deploy
 - real Codex CLI execution path with startup preflight and persisted runner artifacts
 - chat-driven job dispatch from a thread without relying on the separate manual job form
 - persisted threads, messages, jobs, approvals, notes, and job events
-- device registration, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
+- signed edge registration, parent-directory repo discovery, probing, dispatch, worktree creation, lifecycle events, summaries, and validation reporting
+- authenticated web UI sessions
+- authenticated SSE notifications for thread, job, and device changes, with polling retained as a fallback
 
 True MVP critical path from here:
 - no remaining slice-level blockers
@@ -1124,9 +1127,17 @@ Immediate next deliverable:
 - `Slice 29 - SPA State Persistence And Realtime Updates`
 
 Immediate hardening focus inside Slice 29:
-- preserve selected thread, selected job, composer text, panel state, and transcript scroll across background updates
-- use the new authenticated SSE baseline as the normal update path
-- keep polling as a slower fallback until browser automation covers realtime behavior
+- current completed Slice 29 baseline preserves selected thread, selected job, composer text, panel state, and transcript scroll across background updates
+- authenticated SSE is now the normal update path for thread, job, and device change notifications
+- polling remains as a slower fallback until browser automation covers realtime behavior
+- optional remaining hardening is reconnect/backoff behavior for SSE before moving to browser automation
+
+Stop point as of 2026-04-06:
+- workspace pins documentation-refreshed child repos: `elowen-api` at `1200014`, `elowen-edge` at `80cd15e`, `elowen-notes` at `5f3c4ec`, `elowen-platform` at `af9752a`, and `elowen-ui` at `96dc194`
+- VPS API image is `ghcr.io/elowen-assistant/elowen-api:sha-d0e31259aab80b3b1897a97b589372aabb3271ff`
+- VPS UI image is `ghcr.io/elowen-assistant/elowen-ui:sha-a480c8b52ee51177aef2c4ebc58a96e0adb48477`
+- latest deployed verification covered public UI/API reachability, authenticated session behavior, and authenticated SSE delivery for `device.changed`
+- recommended next project step is `Slice 30 - UI Browser Automation`, unless one final Slice 29 reconnect/backoff pass is chosen first
 
 Important note:
 - `Workflow #2` baseline is now live through `Slice 21`

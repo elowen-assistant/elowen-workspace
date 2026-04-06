@@ -13,13 +13,26 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 - `elowen-platform/` - shared deployment assets, contracts, schemas, and docs
 - `codex/` - workspace-level Codex instructions, playbooks, and shared skills
 
-`roadmap.md` remains the source of truth for the product and architecture direction. This scaffold aligns to the first deliverables called out there:
+`roadmap.md` remains the source of truth for the product and architecture direction.
 
-- service/repo skeletons
-- Docker Compose
-- protobuf contracts
-- Postgres schema
-- notes bootstrap draft
+## Current State
+
+As of the current handoff, slices `0` through `28` are complete and `Slice 29 - SPA State Persistence And Realtime Updates` is in progress.
+
+The shipped baseline includes:
+
+- a VPS-hosted orchestrator deployment over HTTPS
+- GHCR prebuilt images for the VPS-hosted API, notes service, and UI
+- a standalone Windows laptop edge runtime with env-file startup
+- signed edge registration with pinned orchestrator trust
+- parent-directory repository discovery on the edge
+- real Codex CLI execution in per-job git worktrees
+- read-only execution intent for informational repository requests
+- approval-backed commit and push execution for mutating jobs
+- a chat-first Leptos UI with web-session authentication
+- authenticated server-sent events for thread, job, and device updates, with slower polling retained as a fallback
+
+The next planned roadmap slice is `Slice 30 - UI Browser Automation`, unless `Slice 29` receives one more reconnect/backoff hardening pass first.
 
 ## Clone
 
