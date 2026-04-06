@@ -1222,6 +1222,11 @@ Design constraints:
   - Gap: polling still exists as a fallback, and realtime behavior is not yet covered by browser automation.
   - Why it matters later: Elowen now behaves like a chat app, so it needs long-lived app state and incremental updates instead of page-like refresh semantics.
   - Suggested future direction: keep CSR as the default, harden targeted SSE refresh behavior, then remove polling once Slice 30 browser automation covers the critical realtime UI flows.
+- Shared Rust message contracts
+  - Current state: service-to-service DTOs are duplicated across Rust crates, with "keep in sync" comments in some module docs.
+  - Gap: the ecosystem now passes many strongly typed messages between Rust services, but the Rust type definitions are not a single source of truth.
+  - Why it matters later: duplicated message structs increase the risk of drift across API, edge, UI, notes, and platform contracts as the system grows.
+  - Suggested future direction: explore an `elowen-types` or `elowen-messages` crate for internal Rust message contracts, keeping external wire compatibility stable and avoiding premature coupling until the crate boundary is clear.
 - UI browser automation
   - Assigned slice: `Slice 30 - UI Browser Automation`
   - Current state: the UI has Rust unit tests for pure formatting helpers, but no browser automation for real layout, viewport, or tap behavior.
