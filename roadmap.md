@@ -1090,6 +1090,8 @@ Definition of done:
 27. `Slice 26 - Parent-Directory Repository Discovery`
 28. `Slice 27 - Material 3 System Alignment`
 29. `Slice 28 - Mutual Orchestrator And Edge Trust`
+30. `Slice 29 - SPA State Persistence And Realtime Updates`
+31. `Slice 30 - UI Browser Automation`
 
 ---
 
@@ -1112,6 +1114,8 @@ True MVP critical path from here:
 Post-MVP slice plan from here:
 - `Slice 27 - Material 3 System Alignment`
 - `Slice 28 - Mutual Orchestrator And Edge Trust`
+- `Slice 29 - SPA State Persistence And Realtime Updates`
+- `Slice 30 - UI Browser Automation`
 
 Immediate next deliverable:
 - `Slice 27 - Material 3 System Alignment`
@@ -1198,13 +1202,25 @@ Design constraints:
   - Gap: the app does not yet follow a full Material 3 token system, adaptive navigation model, component semantics, or motion/elevation guidance consistently.
   - Why it matters later: a dedicated alignment pass would make the UI more coherent across desktop/mobile states and reduce ad hoc styling drift as the product grows.
   - Suggested future direction: adopt a proper Material 3 design token layer, component mapping, adaptive navigation behavior, and edge-to-edge/mobile conventions in a dedicated slice instead of continuing to fold those structural changes into general UI cleanup.
-  - Future note: move the UI toward true SPA-style client persistence instead of periodic refresh/poll-driven state replacement, so scroll position, panel open/closed state, selected context, and transcript continuity stop jumping around on refresh.
+  - Future note: keep the UI client-side rendered for now; SSR is deferred because the current pain is long-running app-state replacement, not initial render quality.
 - Mutual orchestrator and edge trust
   - Assigned slice: `Slice 28 - Mutual Orchestrator And Edge Trust`
   - Current state: device registration is now more ergonomic, but long-lived machine trust still depends on ambient network trust and application-level assumptions rather than pinned cryptographic identity.
   - Gap: an edge device cannot yet prove that it belongs to a specific orchestrator, and the orchestrator cannot yet prove that a registering device is one of its trusted enrolled machines.
   - Why it matters later: a stronger trust model is required if edge registration should feel SSH-like instead of “reachable API plus accepted device id”.
   - Suggested future direction: give the orchestrator its own long-term keypair, pin the orchestrator public key in edge config, issue or enroll per-edge keypairs, and move registration toward a mutual signed challenge flow over TLS so both sides verify identity before long-lived trust is established.
+- SPA state persistence and realtime updates
+  - Assigned slice: `Slice 29 - SPA State Persistence And Realtime Updates`
+  - Current state: the UI is a client-side Leptos app, but it still relies on periodic polling that can replace selected thread/job state wholesale.
+  - Gap: refresh/poll-driven replacement can disturb scroll position, panel open/closed state, selected context, and transcript continuity.
+  - Why it matters later: Elowen now behaves like a chat app, so it needs long-lived app state and incremental updates instead of page-like refresh semantics.
+  - Suggested future direction: keep CSR as the default, preserve selected thread/job/panel/composer/scroll state in the client, and add SSE or WebSocket events from `elowen-api` so new thread and job updates apply incrementally.
+- UI browser automation
+  - Assigned slice: `Slice 30 - UI Browser Automation`
+  - Current state: the UI has Rust unit tests for pure formatting helpers, but no browser automation for real layout, viewport, or tap behavior.
+  - Gap: regressions such as bottom-sheet overlays, sticky composer placement, message-pane scroll containment, and mobile tap targets are not covered by the Rust test suite.
+  - Why it matters later: the UI is now a primary product surface, and CSS/layout regressions have repeatedly required manual feedback loops.
+  - Suggested future direction: add a dev/CI-only Playwright suite with stable `data-testid` hooks for login, mobile Details sheet interactions, backdrop stacking, composer pinning, message-pane scrolling, Material send icon rendering, and `Job Update` versus `Job Complete` presentation.
 - Thread-visible final job result message
   - Assigned slice: `Slice 23 - Thread-Visible Final Job Result Message`
   - Current state: the thread shows lifecycle milestones and summary-oriented assistant replies, but it does not reliably surface the final runner `last_message` as the primary completion artifact in chat.
