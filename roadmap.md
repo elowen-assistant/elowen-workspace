@@ -931,6 +931,11 @@ Scope notes:
 
 Follow-up refinements:
 - tighten execution-draft title synthesis so generated draft titles are concise task labels rather than just echoing the first clause of the user's request
+- improve the orchestrator instruction set for field-specific draft synthesis:
+  - `Title`: summarize the requested task concisely, preferably in fewer than 140 characters
+  - `Repository`: choose from the known list of available repositories rather than guessing free-form text
+  - `Branch`: default to `main` unless context indicates a better branch, but still propose a concrete reasonable branch
+  - `Request Text`: carry the actual requested work, not the meta-request asking the assistant to prepare a draft
 
 ---
 
