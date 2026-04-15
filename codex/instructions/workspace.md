@@ -19,8 +19,8 @@ These instructions apply across the Elowen workspace unless a service repository
 
 ## Current Platform Decisions
 
-- Slices 0 through 28 are complete.
-- Slice 29 is in progress and currently focuses on SPA-style client state persistence plus authenticated SSE updates.
+- Slices 0 through 29 are complete.
+- Slice 29 delivered SPA-style client state persistence plus authenticated SSE updates with explicit reconnect/backoff recovery.
 - Slice 30 is the next planned slice and should add browser automation for UI layout, tap, scroll, auth, and realtime behavior.
 - Notes are modeled in ArangoDB using document collections, edge collections, and ArangoSearch.
 - Notes service contracts should remain portable enough to support a future MongoDB migration if needed.

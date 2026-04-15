@@ -329,10 +329,10 @@ Document collections:
 
 ## 10. Vertical Slice Roadmap
 
-### Current verified delivery status as of 2026-04-06
+### Current verified delivery status as of 2026-04-15
 
-- Slice set `0` through `28` is implemented on `main`.
-- `Slice 29 - SPA State Persistence And Realtime Updates` is in progress, with the current baseline already preserving selected thread, selected job, composer text, panel state, and transcript scroll across background updates.
+- Slice set `0` through `29` is implemented on `main`.
+- `Slice 29 - SPA State Persistence And Realtime Updates` is complete, preserving selected thread, selected job, composer text, panel state, and transcript scroll across background updates while explicitly managing realtime reconnect/backoff recovery.
 - The completed true-MVP path remains `Workflow #1`: thread-native request -> dispatched laptop job -> assistant reply back into the same thread.
 - The shipped post-MVP baseline now also includes `Workflow #2`: conversational orchestrator replies, explicit handoff into execution, transcript mode visibility, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI updates, web-session authentication, parent-directory repository discovery, Material 3-aligned shell work, and signed edge registration.
 - `elowen-ui` now behaves as a chat-first authenticated SPA with local state persistence, authenticated SSE updates, global jobs, job detail, approvals, notes, and the manual create-job form retained only as an advanced fallback.
@@ -341,7 +341,7 @@ Document collections:
 - `elowen-platform` documents both the VPS deployment path and the standalone laptop edge path, including same-origin HTTPS routing, GHCR-prebuilt VPS images, Windows startup helpers, and trusted edge registration.
 - `elowen-notes` preserves note revision ancestry and authorship metadata, while the promoted-note path remains integrated into both job-backed and conversational thread context.
 - The VPS-to-laptop flow has been re-validated as the current user-visible baseline, while `elowen-platform/k8s/base` remains migration scaffolding rather than a production deployment target.
-- There are no remaining slice-level blockers to the true MVP; the active roadmap focus is now UI/state hardening and post-MVP product maturity.
+- There are no remaining slice-level blockers to the true MVP; the active roadmap focus is now browser automation and post-MVP product maturity.
 
 ### True MVP definition
 
@@ -1093,7 +1093,7 @@ Delivered notes:
 
 ### Slice 29 - SPA State Persistence And Realtime Updates
 Status:
-- in progress
+- complete
 
 Outcome:
 - the UI behaves like a long-lived client application instead of a page that keeps replacing its own state
@@ -1121,10 +1121,11 @@ Planned validation:
 Delivered baseline so far:
 - the current Slice 29 baseline already preserves selected thread, selected job, composer text, panel state, and transcript scroll across background updates
 - authenticated SSE is now the normal update path for thread, job, and device change notifications
+- the UI now explicitly closes, retries, and catch-up refreshes SSE connections with capped reconnect/backoff instead of relying on implicit browser retry behavior
 - polling remains as a slower fallback until browser automation covers the critical realtime UI flows
 
 Remaining gap:
-- optional remaining hardening is reconnect/backoff behavior for SSE before moving fully to Slice 30
+- none inside Slice 29; the next remaining validation step moves to Slice 30 browser automation
 
 ### Slice 30 - UI Browser Automation
 Status:
@@ -1349,7 +1350,6 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 29 - SPA State Persistence And Realtime Updates`
 - `Slice 30 - UI Browser Automation`
 - `Slice 31 - Chat Surface And Draft UX Polish`
 - `Slice 32 - Identity And Authorization Hardening`
@@ -1363,20 +1363,20 @@ Post-MVP slice plan from here:
 - `Slice 40 - CI Workflow Maintenance`
 
 Immediate next deliverable:
-- `Slice 29 - SPA State Persistence And Realtime Updates`
+- `Slice 30 - UI Browser Automation`
 
-Immediate hardening focus inside Slice 29:
-- current completed Slice 29 baseline preserves selected thread, selected job, composer text, panel state, and transcript scroll across background updates
-- authenticated SSE is now the normal update path for thread, job, and device change notifications
-- polling remains as a slower fallback until browser automation covers realtime behavior
-- optional remaining hardening is reconnect/backoff behavior for SSE before moving to browser automation
+Slice 29 closeout:
+- selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
+- authenticated SSE remains the normal update path for thread, job, and device change notifications
+- the UI explicitly manages capped reconnect/backoff recovery and catch-up refresh after SSE interruptions
+- polling remains as a slower fallback until browser automation proves the critical realtime UI flows
 
 Stop point as of 2026-04-06:
 - workspace pins documentation-refreshed child repos: `elowen-api` at `1200014`, `elowen-edge` at `80cd15e`, `elowen-notes` at `5f3c4ec`, `elowen-platform` at `af9752a`, and `elowen-ui` at `96dc194`
 - VPS API image is `ghcr.io/elowen-assistant/elowen-api:sha-d0e31259aab80b3b1897a97b589372aabb3271ff`
 - VPS UI image is `ghcr.io/elowen-assistant/elowen-ui:sha-a480c8b52ee51177aef2c4ebc58a96e0adb48477`
 - latest deployed verification covered public UI/API reachability, authenticated session behavior, and authenticated SSE delivery for `device.changed`
-- recommended next project step is `Slice 30 - UI Browser Automation`, unless one final Slice 29 reconnect/backoff pass is chosen first
+- recommended next project step is `Slice 30 - UI Browser Automation`
 
 Important note:
 - `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 28`
@@ -1386,7 +1386,7 @@ Important note:
 
 ## 21. Planned Post-30 Slice Set
 
-This section tracks all remaining outstanding work after the current `Slice 29` and `Slice 30` focus. Every currently tracked follow-on item is assigned to a planned slice.
+This section tracks all remaining outstanding work after the current `Slice 30` focus. Every currently tracked follow-on item is assigned to a planned slice.
 
 ### Workflow #2 - Conversational Orchestrator Reply Path
 

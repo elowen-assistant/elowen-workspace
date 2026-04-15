@@ -24,16 +24,16 @@ When a new cross-repo convention or recurring workflow appears during developmen
 
 ## Current Handoff
 
-As of 2026-04-06, slices `0` through `28` are complete and `Slice 29 - SPA State Persistence And Realtime Updates` is in progress.
+As of 2026-04-15, slices `0` through `29` are complete and `Slice 30 - UI Browser Automation` is the next planned slice.
 
 Current baseline:
 
 - VPS API/UI/notes deploys pull prebuilt GHCR images instead of compiling on the VPS.
 - The web UI is authenticated with API-issued cookie sessions.
-- The UI is still client-side rendered Leptos, with local state persistence and authenticated SSE updates.
+- The UI is still client-side rendered Leptos, with local state persistence and authenticated SSE updates plus explicit reconnect/backoff recovery.
 - Polling remains only as a slower fallback until browser automation covers realtime behavior.
 - The laptop edge uses parent-directory repository discovery and signed registration proof against a pinned orchestrator key.
 
 Next planned step:
 
-- Continue from Slice 29 into `Slice 30 - UI Browser Automation`, unless one final reconnect/backoff hardening pass is chosen first.
+- Continue into `Slice 30 - UI Browser Automation`.
