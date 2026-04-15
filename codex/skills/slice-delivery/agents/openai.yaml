@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slice Delivery"
+  short_description: "Plan, execute, validate, and close roadmap slices"
+  default_prompt: "Use $slice-delivery to plan and close the next Elowen roadmap slice."

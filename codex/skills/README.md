@@ -11,4 +11,8 @@ Good candidates:
 
 Do not duplicate service-specific skills here if they only apply to one repository.
 
-Current cross-repo candidates include GHCR image deployment, Slice-based roadmap handoff, and future UI browser automation setup.
+Current workspace skill:
+
+- `slice-delivery/` - planning-first roadmap slice workflow covering `slice/N-slug` branches, two automated validation phases, mandatory Rust refactoring across touched Rust repos, manual UAT, and closeout updates for `roadmap.md` plus `codex/notes/YYYY-MM-DD-handoff.md`
+
+Other cross-repo candidates include GHCR image deployment and future UI browser automation setup.
