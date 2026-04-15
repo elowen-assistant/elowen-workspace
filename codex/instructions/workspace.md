@@ -46,6 +46,7 @@ These instructions apply across the Elowen workspace unless a service repository
 - `elowen-workspace` tracks child repositories as Git submodules.
 - A child repo change should normally be committed and pushed in the child repo first.
 - After the child repo moves, update the submodule pointer in `elowen-workspace` and commit that change separately.
+- Before starting a new slice branch, audit local child-repo branches and worktrees for commits ahead of `main` or `origin/main` so new work does not fork from a stale line while a newer local UI or platform branch is still unmerged.
 
 ## Change Discipline
 
