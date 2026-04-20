@@ -329,9 +329,9 @@ Document collections:
 
 ## 10. Vertical Slice Roadmap
 
-### Current verified delivery status as of 2026-04-15
+### Current verified delivery status as of 2026-04-20
 
-- Slice set `0` through `31` is implemented on `main`.
+- Slice set `0` through `32` is implemented on `main`.
 - `Slice 29 - SPA State Persistence And Realtime Updates` is complete, preserving selected thread, selected job, composer text, panel state, and transcript scroll across background updates while explicitly managing realtime reconnect/backoff recovery.
 - The completed true-MVP path remains `Workflow #1`: thread-native request -> dispatched laptop job -> assistant reply back into the same thread.
 - The shipped post-MVP baseline now also includes `Workflow #2`: conversational orchestrator replies, explicit handoff into execution, transcript mode visibility, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI updates, web-session authentication, parent-directory repository discovery, Material 3-aligned shell work, signed edge registration, and the Slice 31 chat-surface/draft polish pass.
@@ -1340,7 +1340,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `31` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, and the Slice 31 chat-surface polish pass.
+Slice set `0` through `32` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, and the Slice 32 identity/authorization hardening closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1358,7 +1358,6 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 32 - Identity And Authorization Hardening`
 - `Slice 33 - Repository Policy And Selection UX`
 - `Slice 34 - Trust Lifecycle Management`
 - `Slice 35 - Service-Grade Laptop Edge Runtime`
@@ -1369,7 +1368,7 @@ Post-MVP slice plan from here:
 - `Slice 40 - CI Workflow Maintenance`
 
 Immediate next deliverable:
-- start `Slice 32 - Identity And Authorization Hardening`
+- start `Slice 33 - Repository Policy And Selection UX`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1377,12 +1376,13 @@ Slice 29 closeout:
 - the UI explicitly manages capped reconnect/backoff recovery and catch-up refresh after SSE interruptions
 - polling remains as a slower fallback until browser automation proves the critical realtime UI flows
 
-Stop point as of 2026-04-15:
+Stop point as of 2026-04-20:
 - Slice 30 is closed: browser automation coverage, live UAT, child-repo merge, and workspace pointer update are complete
 - Slice 31 is closed on merged `main` across `elowen-api`, `elowen-ui`, and `elowen-workspace`
 - Slice 31 validation includes both automated phases plus local manual UAT covering draft presentation, result disclosure, dispatch promotion, timestamp formatting, and keyboard submit behavior
 - production still runs the `elowen-ui` image built from merged `main` at `ghcr.io/elowen-assistant/elowen-ui:sha-bf1baf317d02a0c16936aacc13f2e849cab1f273`
-- the next recommended project step is `Slice 32 - Identity And Authorization Hardening`
+- Slice 32 is closed on merged `main` across `elowen-api`, `elowen-ui`, `elowen-platform`, and `elowen-workspace`
+- the next recommended project step is `Slice 33 - Repository Policy And Selection UX`
 
 Important note:
 - `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 31`
