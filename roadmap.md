@@ -1340,7 +1340,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `32` is complete, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, and the Slice 32 identity/authorization hardening closeout.
+Slice set `0` through `35` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, and the Slice 35 laptop edge runtime closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1369,7 +1369,7 @@ Post-MVP slice plan from here:
 - `Slice 41 - Edge Client Usability And Runtime UX`
 
 Immediate next deliverable:
-- start `Slice 34 - Trust Lifecycle Management`
+- start `Slice 36 - Shared Rust Message Contracts`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1377,14 +1377,18 @@ Slice 29 closeout:
 - the UI explicitly manages capped reconnect/backoff recovery and catch-up refresh after SSE interruptions
 - polling remains as a slower fallback until browser automation proves the critical realtime UI flows
 
-Stop point as of 2026-04-20:
+Stop point as of 2026-04-21:
 - Slice 30 is closed: browser automation coverage, live UAT, child-repo merge, and workspace pointer update are complete
 - Slice 31 is closed on merged `main` across `elowen-api`, `elowen-ui`, and `elowen-workspace`
 - Slice 31 validation includes both automated phases plus local manual UAT covering draft presentation, result disclosure, dispatch promotion, timestamp formatting, and keyboard submit behavior
 - production still runs the `elowen-ui` image built from merged `main` at `ghcr.io/elowen-assistant/elowen-ui:sha-bf1baf317d02a0c16936aacc13f2e849cab1f273`
 - Slice 32 is closed on merged `main` across `elowen-api`, `elowen-ui`, `elowen-platform`, and `elowen-workspace`
 - Slice 33 is closed on merged `main` across `elowen-api`, `elowen-edge`, `elowen-ui`, `elowen-platform`, and `elowen-workspace`
-- the next recommended project step is `Slice 34 - Trust Lifecycle Management`
+- Slice 35 is closed on merged `main` across `elowen-edge`, `elowen-platform`, and `elowen-workspace`
+- Slice 35 shipped a supervised Windows wrapper loop, a scheduled-task installer that falls back cleanly when the host denies `Startup + S4U`, a full `elowen-edge` documentation pass, and refreshed laptop-edge runbook guidance
+- Slice 35 automated validation passed in `elowen-edge`: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --quiet`, and `cargo doc --no-deps`
+- Slice 35 manual UAT passed on the current Windows host for scheduled-task launch, trusted registration, and wrapper-driven process recovery, with the important caveat that this host denied the strict non-interactive `Startup + S4U` install path from the current non-elevated session
+- the next recommended project step is `Slice 36 - Shared Rust Message Contracts`
 
 Important note:
 - `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 31`
@@ -1486,7 +1490,7 @@ Why this slice exists:
 ### Slice 35 - Service-Grade Laptop Edge Runtime
 
 Status:
-- planned
+- complete
 
 Assigned scope:
 - stronger Windows service or hardened scheduled-task model
@@ -1495,6 +1499,12 @@ Assigned scope:
 
 Why this slice exists:
 - Slice 13 shipped a workable standalone runtime, but the laptop startup story is not yet service-grade on every host
+
+Outcome:
+- `elowen-edge` now supports a supervised Windows wrapper loop that keeps the SSH tunnel and runtime aligned and restarts the pair after recoverable failure
+- the Scheduled Task installer now prefers `Startup + S4U`, but falls back to `LogOn + Interactive` with explicit messaging when the current host denies the stricter mode and `-RequireServiceGrade` is not supplied
+- `elowen-edge` now has a broader documentation pass across runtime, config, discovery, sandbox, registration, execution, README guidance, and Windows script behavior
+- `elowen-platform` now documents the scheduled-task path as the preferred Windows installation model and demotes Startup-folder launch to fallback-only guidance
 
 ### Slice 36 - Shared Rust Message Contracts
 
