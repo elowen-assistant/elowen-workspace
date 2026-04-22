@@ -329,9 +329,9 @@ Document collections:
 
 ## 10. Vertical Slice Roadmap
 
-### Current verified delivery status as of 2026-04-20
+### Current verified delivery status as of 2026-04-22
 
-- Slice set `0` through `32` is implemented on `main`.
+- Slice set `0` through `36` is implemented on `main`.
 - `Slice 29 - SPA State Persistence And Realtime Updates` is complete, preserving selected thread, selected job, composer text, panel state, and transcript scroll across background updates while explicitly managing realtime reconnect/backoff recovery.
 - The completed true-MVP path remains `Workflow #1`: thread-native request -> dispatched laptop job -> assistant reply back into the same thread.
 - The shipped post-MVP baseline now also includes `Workflow #2`: conversational orchestrator replies, explicit handoff into execution, transcript mode visibility, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI updates, web-session authentication, parent-directory repository discovery, Material 3-aligned shell work, signed edge registration, and the Slice 31 chat-surface/draft polish pass.
@@ -1340,7 +1340,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `35` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, and the Slice 35 laptop edge runtime closeout.
+Slice set `0` through `36` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, and the Slice 36 shared Rust message contracts closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1358,10 +1358,6 @@ True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 33 - Repository Policy And Selection UX`
-- `Slice 34 - Trust Lifecycle Management`
-- `Slice 35 - Service-Grade Laptop Edge Runtime`
-- `Slice 36 - Shared Rust Message Contracts`
 - `Slice 37 - Notes Retrieval And Context Expansion`
 - `Slice 38 - Tools And Integration Expansion`
 - `Slice 39 - Kubernetes Deployment Validation`
@@ -1369,7 +1365,7 @@ Post-MVP slice plan from here:
 - `Slice 41 - Edge Client Usability And Runtime UX`
 
 Immediate next deliverable:
-- start `Slice 36 - Shared Rust Message Contracts`
+- start `Slice 37 - Notes Retrieval And Context Expansion`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1377,7 +1373,7 @@ Slice 29 closeout:
 - the UI explicitly manages capped reconnect/backoff recovery and catch-up refresh after SSE interruptions
 - polling remains as a slower fallback until browser automation proves the critical realtime UI flows
 
-Stop point as of 2026-04-21:
+Stop point as of 2026-04-22:
 - Slice 30 is closed: browser automation coverage, live UAT, child-repo merge, and workspace pointer update are complete
 - Slice 31 is closed on merged `main` across `elowen-api`, `elowen-ui`, and `elowen-workspace`
 - Slice 31 validation includes both automated phases plus local manual UAT covering draft presentation, result disclosure, dispatch promotion, timestamp formatting, and keyboard submit behavior
@@ -1388,7 +1384,10 @@ Stop point as of 2026-04-21:
 - Slice 35 shipped a supervised Windows wrapper loop, a scheduled-task installer that falls back cleanly when the host denies `Startup + S4U`, a full `elowen-edge` documentation pass, and refreshed laptop-edge runbook guidance
 - Slice 35 automated validation passed in `elowen-edge`: `cargo fmt --check`, `cargo clippy --all-targets -- -D warnings`, `cargo test --quiet`, and `cargo doc --no-deps`
 - Slice 35 manual UAT passed on the current Windows host for scheduled-task launch, trusted registration, and wrapper-driven process recovery, with the important caveat that this host denied the strict non-interactive `Startup + S4U` install path from the current non-elevated session
-- the next recommended project step is `Slice 36 - Shared Rust Message Contracts`
+- Slice 36 is closed on merged `main` across `elowen-api`, `elowen-edge`, `elowen-platform`, and `elowen-workspace`
+- Slice 36 delivered a shared internal Rust API-edge contract crate under `elowen-platform/contracts/rust/elowen-contracts`, removed duplicated Rust DTO definitions from `elowen-api` and `elowen-edge`, and preserved the existing wire compatibility for registration, probe, dispatch, approval, and lifecycle messages
+- Slice 36 automated validation passed in `elowen-platform/contracts/rust/elowen-contracts`, `elowen-api`, and `elowen-edge`, and minimal local manual UAT passed on 2026-04-22 for trusted registration plus a real read-only dispatch through `job.completed`
+- the next recommended project step is `Slice 37 - Notes Retrieval And Context Expansion`
 
 Important note:
 - `Workflow #2` baseline and the first post-MVP execution/chat/security/discovery expansion set are now live through `Slice 31`
@@ -1509,7 +1508,18 @@ Outcome:
 ### Slice 36 - Shared Rust Message Contracts
 
 Status:
-- planned
+- complete on merged `main`
+
+Delivered:
+- `elowen-platform` now owns `contracts/rust/elowen-contracts`, a shared internal Rust crate for API-edge registration, trust, probe, dispatch, approval, and lifecycle message DTOs
+- `elowen-api` and `elowen-edge` now consume the shared crate instead of maintaining duplicated internal contract structs
+- the shared contract crate preserves the existing wire-level serde field names and compatibility defaults while giving the Rust services one ownership point for internal message evolution
+
+Validation:
+- automated validation passed in `elowen-platform/contracts/rust/elowen-contracts`: `cargo test --quiet` and `cargo clippy --all-targets -- -D warnings`
+- automated validation passed in `elowen-api`: `cargo check`, `cargo test --quiet`, and `cargo clippy --all-targets -- -D warnings`
+- automated validation passed in `elowen-edge`: `cargo check`, `cargo test --quiet`, and `cargo clippy --all-targets -- -D warnings`
+- manual UAT passed on 2026-04-22 against a local API-edge pair: trusted registration succeeded, the API created and dispatched a real read-only job, the edge accepted it, created the disposable worktree, started execution, and published `job.completed`, and the API decoded the full lifecycle plus execution report successfully
 
 Assigned scope:
 - shared internal Rust message crate

@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-20, slices `0` through `33` are complete on merged `main`.
+As of 2026-04-22, slices `0` through `36` are complete on merged `main`.
 
 The shipped baseline includes:
 
@@ -33,7 +33,7 @@ The shipped baseline includes:
 - authenticated server-sent events for thread, job, and device updates, with explicit reconnect/backoff recovery and slower polling retained as a fallback
 - polished chat transcript/result surfaces and execution-draft handoff cards with local timestamp rendering and keyboard submit affordances
 
-The next planned roadmap slice is `Slice 34 - Trust Lifecycle Management`.
+The next planned roadmap slice is `Slice 37 - Notes Retrieval And Context Expansion`.
 
 ## Clone
 

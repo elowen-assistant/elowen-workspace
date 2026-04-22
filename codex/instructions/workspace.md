@@ -19,7 +19,7 @@ These instructions apply across the Elowen workspace unless a service repository
 
 ## Current Platform Decisions
 
-- Slices 0 through 31 are complete on merged `main`.
+- Slices 0 through 36 are complete on merged `main`.
 - Slice 29 delivered SPA-style client state persistence plus authenticated SSE updates with explicit reconnect/backoff recovery.
 - Slice 30 delivered browser automation coverage for UI layout, tap, scroll, auth, sticky-composer behavior, and realtime transcript updates.
 - Slice 31 closed on 2026-04-15, delivering cleaner execution-draft synthesis, stronger transcript/result differentiation, localized timestamps, and `Ctrl+Enter` / `Cmd+Enter` composer submit on merged `main`.
@@ -29,6 +29,7 @@ These instructions apply across the Elowen workspace unless a service repository
 - Service Dockerfiles should stay on a Rust base image version that satisfies the current dependency MSRV across the workspace.
 - VPS deploys should use GHCR prebuilt images and `docker compose pull && docker compose up -d`, not on-host Rust compilation.
 - Device registration is API-backed and can require signed edge proof against a pinned orchestrator key.
+- Shared internal Rust API-edge message contracts live in `elowen-platform/contracts/rust/elowen-contracts`.
 - Availability probes use NATS request-reply on `elowen.devices.availability.probe.{device_id}`.
 - Job dispatch currently uses NATS publish-subscribe on `elowen.jobs.dispatch.{device_id}`.
 - Job lifecycle events currently use NATS publish-subscribe on `elowen.jobs.events`.
