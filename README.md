@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-23, slices `0` through `38` are complete on this Slice 38 branch, with slices `0` through `37` complete on local `main`.
+As of 2026-04-23, slices `0` through `39` are complete on this Slice 39 branch, with slices `0` through `38` complete on local `main`.
 
 The shipped baseline includes:
 
@@ -37,8 +37,11 @@ The shipped baseline includes:
 - generic-job orchestration where repository execution is one specialization rather than the universal default
 - capability-targeted non-repo job drafts, dispatch, routing, and edge execution for the first prompt-first generic-job vertical
 - manual Slice 38 UAT proving both capability execution without a repo worktree and repository execution with disposable worktrees plus passing validation in the local Compose stack
+- an audited Kubernetes base that reflects the post-Slice-38 stack more truthfully, including the current API auth/config inputs and GHCR-backed image defaults
+- manual Slice 39 validation in a local `kind` cluster proving the in-cluster orchestrator stack applies and runs, with private GHCR registry access called out as the first real operator-side deployment prerequisite
+- an explicit supported Kubernetes topology where `elowen-edge` remains a separate trusted device runtime and any in-cluster edge manifest is treated as experimental only
 
-The next planned roadmap slice is `Slice 39 - Kubernetes Deployment Validation`.
+The next planned roadmap slice is `Slice 40 - CI Workflow Maintenance`.
 
 ## Clone
 

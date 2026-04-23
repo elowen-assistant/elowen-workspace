@@ -1340,7 +1340,7 @@ Definition of done:
 
 ## 20. Next Deliverable
 
-Slice set `0` through `38` is complete on the current Slice 38 branch, and slices `0` through `37` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, and the Slice 38 generic-job and non-repo execution closeout.
+Slice set `0` through `39` is complete on the current Slice 39 branch, and slices `0` through `38` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, and the Slice 39 Kubernetes deployment validation closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1356,17 +1356,19 @@ Current delivered baseline:
 - generic jobs with explicit repository-versus-capability targeting
 - prompt-first execution envelopes for both conversational drafts and dispatch
 - capability-routed non-repo execution that skips worktree, commit, and push flows
+- an audited Kubernetes base aligned with the current post-Slice-38 stack
+- a validated local `kind` deployment path for the in-cluster orchestrator services
+- an explicit supported Kubernetes topology that excludes `elowen-edge` from the validated base and treats in-cluster edge manifests as experimental
 
 True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- `Slice 39 - Kubernetes Deployment Validation`
 - `Slice 40 - CI Workflow Maintenance`
 - `Slice 41 - Edge Client Usability And Runtime UX`
 
 Immediate next deliverable:
-- start `Slice 39 - Kubernetes Deployment Validation`
+- start `Slice 40 - CI Workflow Maintenance`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1599,12 +1601,27 @@ Why this slice exists:
 ### Slice 39 - Kubernetes Deployment Validation
 
 Status:
-- planned
+- closed on branch
 
 Assigned scope:
 - validated Kubernetes deployment path for the current real system
 - operational guidance for the Kubernetes topology
 - confirmation that the Compose-first architecture still has a real migration path
+
+Delivered in this slice:
+- audited `elowen-platform/k8s/base` against the current post-Slice-38 stack instead of leaving older scaffolding assumptions in place
+- updated the Kubernetes base to use the current GHCR-backed service image defaults and current API auth/config inputs
+- documented the deployment-input expectations explicitly, including real secret replacement, optional account-config auth, image-tag pinning, and GHCR pull-secret setup
+- moved `elowen-edge` out of the validated base and into `k8s/experimental`, making the supported topology explicit: in-cluster orchestrator services plus a separate trusted device runtime for repository execution
+- recorded real validation results directly in the Kubernetes docs rather than only in issue comments
+
+Validation and closeout:
+- `kubectl kustomize elowen-platform/k8s/base` renders successfully
+- the validated base applied successfully to a local `kind` cluster on 2026-04-23
+- `postgres`, `nats`, and `arangodb` started successfully with the current manifests
+- `elowen-api`, `elowen-notes`, and `elowen-ui` reached `Running` and passed direct HTTP probes after their images were made available inside the cluster
+- the first real cluster-side deployment blocker was private GHCR image access, which is now documented as an operator prerequisite rather than an implicit assumption
+- GitHub milestone issues `#3`, `#5`, `#6`, and `#7` were closed after the topology decision, audit pass, deployment-input pass, and local cluster validation were completed
 
 Why this slice exists:
 - Kubernetes remains intentionally non-MVP, but the migration path should eventually become real rather than remaining only scaffolding
