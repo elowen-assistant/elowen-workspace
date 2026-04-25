@@ -17,7 +17,7 @@ This folder is the umbrella workspace for Elowen, a personal cloud AI-assistant 
 
 ## Current State
 
-As of 2026-04-25, slices `0` through `41` are complete on this Slice 41 branch, with slices `0` through `40` complete on local `main`.
+As of 2026-04-25, slices `0` through `42` are complete on `main`.
 
 The shipped baseline includes:
 
@@ -44,8 +44,9 @@ The shipped baseline includes:
 - a repaired `elowen-api` image publish path that checks out the shared `elowen-platform` contracts repo during hosted image builds
 - hosted Slice 40 verification runs passing for `elowen-api`, `elowen-notes`, and `elowen-ui` image publish plus the `elowen-ui` browser automation workflow
 - Slice 41 edge usability work adding TOML-only edge configuration, one-time env import, permission-checked local secret files, local status JSON, TUI diagnostics/service controls, Codex command auto-discovery, hidden Windows Task Scheduler launch, unsigned Inno Setup Windows installer packaging, and Windows/Linux executable artifact builds
+- Slice 42 trust lifecycle completion adding auditable trust events, orchestrator signer lifecycle metadata, admin trust actions, trust-aware dispatch blocking, edge/TUI trust diagnostics, and clean-stack validation of rotation, revocation, and recovery
 
-No next numbered roadmap slice is currently assigned after Slice 41.
+The next planned roadmap slice is `Slice 43 - Realtime-Only Orchestrator UI`, followed by `Slice 44 - Secrets And Key Material Hardening`.
 
 ## Clone
 

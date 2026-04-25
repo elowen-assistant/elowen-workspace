@@ -1336,12 +1336,15 @@ Definition of done:
 40. `Slice 39 - Kubernetes Deployment Validation`
 41. `Slice 40 - CI Workflow Maintenance`
 42. `Slice 41 - Edge Client Usability And Runtime UX`
+43. `Slice 42 - Trust Lifecycle Completion`
+44. `Slice 43 - Realtime-Only Orchestrator UI`
+45. `Slice 44 - Secrets And Key Material Hardening`
 
 ---
 
 ## 20. Next Deliverable
 
-Slice set `0` through `41` is complete on the current Slice 41 branch, and slices `0` through `40` are complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, the Slice 40 CI workflow maintenance closeout, and the Slice 41 edge client usability/runtime UX closeout.
+Slice set `0` through `42` is complete on merged `main`, including the post-MVP Workflow #2 work for conversational replies, explicit handoff, transcript visibility, approval-backed push execution, conversational execution drafts, read-only request handling, thread-visible final job results, chat-forward UI redesign, a real web UI authentication boundary, parent-directory repository discovery for edge registration, the first Material 3-aligned UI shell pass, mutual orchestrator/edge trust for signed edge registration, browser automation coverage, the Slice 31 chat-surface polish pass, the Slice 32 identity/authorization hardening closeout, the Slice 33 repository policy and selection UX closeout, the Slice 34 trust lifecycle management closeout, the Slice 35 laptop edge runtime closeout, the Slice 36 shared Rust message contracts closeout, the Slice 37 notes retrieval and context expansion closeout, the Slice 38 generic-job and non-repo execution closeout, the Slice 39 Kubernetes deployment validation closeout, the Slice 40 CI workflow maintenance closeout, the Slice 41 edge client usability/runtime UX closeout, and the Slice 42 trust lifecycle completion closeout.
 
 Current delivered baseline:
 - local Compose stack for the orchestrator topology
@@ -1363,15 +1366,17 @@ Current delivered baseline:
 - hosted GitHub Actions image-publish workflows that now pass on current runners across the touched service repos
 - a hosted UI browser automation workflow that now matches the current UI contract instead of stale Slice 30/31 fixture assumptions
 - CI-built `elowen-edge` Windows and Linux executable artifacts for release-tag or manual workflow runs
+- auditable trust lifecycle state for edge devices, orchestrator signer metadata, admin trust actions, trust-aware dispatch blocking, and TUI-readable structured trust diagnostics
 
 True MVP critical path from here:
 - no remaining slice-level blockers
 
 Post-MVP slice plan from here:
-- no numbered follow-on slice is currently assigned after Slice 41
+- `Slice 43 - Realtime-Only Orchestrator UI`
+- `Slice 44 - Secrets And Key Material Hardening`
 
 Immediate next deliverable:
-- decide the next numbered post-MVP slice
+- start `Slice 43 - Realtime-Only Orchestrator UI`
 
 Slice 29 closeout:
 - selected thread, selected job, composer text, panel state, and transcript scroll now persist across background updates
@@ -1484,13 +1489,16 @@ Closeout summary as of 2026-04-20:
 ### Slice 34 - Trust Lifecycle Management
 
 Status:
-- planned
+- complete
 
 Assigned scope:
 - orchestrator and edge key rotation
 - revocation handling
 - visible trust state in the UI
 - safer multi-edge enrollment workflow
+
+Closeout note:
+- Slice 34 shipped the first trust lifecycle surface for trusted registration state, rotation/revocation metadata, and operator-visible trust status. Slice 42 is a second trust-lifecycle pass focused on making those behaviors operationally complete.
 
 Why this slice exists:
 - Slice 28 shipped the first real trust boundary, but long-term secure operation needs lifecycle tooling rather than static key setup
@@ -1694,3 +1702,189 @@ Validation and closeout:
 Why this slice exists:
 - the edge can now register and advertise repositories, but the end-to-end operator experience is still too fragile, especially on Windows where a present `codex.exe` may still fail from a background edge process
 - this work needs an explicit product-design and runtime-usability pass rather than continued piecemeal setup fixes
+
+### Slice 42 - Trust Lifecycle Completion
+
+Status:
+- complete
+
+Assigned scope:
+- complete the orchestrator/edge trust lifecycle beyond basic trusted registration, including key rotation, revocation recovery, multi-edge enrollment, and operator-visible remediation states
+- preserve local edge status JSON, TUI diagnostics, edge heartbeats, and explicit availability probes while making their trust failure modes clearer
+- keep the normal orchestrator UI update mechanism unchanged except where trust lifecycle actions need to publish existing UI/device events; the broader polling and realtime communication cleanup moves to Slice 43
+
+Closeout summary as of 2026-04-25:
+- `elowen-api` now owns the authoritative trust lifecycle with `device_trust_events`, `orchestrator_signer_states`, normalized current trust projections, structured trust error codes, hardened signed registration, previous-key rotation proof checks, signer stage/activate/retire APIs, and trust-aware dispatch blocking across manual, conversational, repository, capability, auto-selection, and approval dispatch paths
+- `elowen-ui` now includes admin trust controls for revoke, confirm rotation, resolve attention, clear revocation, trust event history, signer lifecycle management, device trust fingerprints/key ids, and dispatch eligibility messaging
+- `elowen-edge` now reports structured registration failure codes into local status JSON, surfaces trust bundle/key readiness and signer challenge diagnostics in the TUI, and preserves private-key permission checks while allowing an explicit dev/container bind-mount override
+- docs now cover orchestrator signer lifecycle, edge key rotation, revocation and recovery, additional enrollment expectations, and TUI diagnostic mapping
+- clean-stack UAT passed after wiping compose volumes and rebuilding from the Slice 42 worktree: the full stack came up from fresh volumes, `elowen-edge` registered as `trusted`, rotation moved a test edge to `rotated`, dispatch was blocked while rotated, admin confirmation restored dispatch, revocation blocked dispatch and registration, revoked edge startup wrote `device_trust_revoked`, and clear-revocation plus fresh key restored trusted registration
+- automated validation passed in `elowen-api`: `cargo fmt --check`, `cargo check`, `cargo test --quiet` with 23 tests, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- automated validation passed in `elowen-ui`: `cargo fmt --check`, `cargo check`, `cargo test --quiet` with 13 tests, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- automated validation passed in `elowen-edge`: `cargo fmt --check`, `cargo check`, `cargo test --quiet` with 25 tests, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- UAT follow-up: the file-based secrets model remains acceptable for Slice 42 but should not become the permanent security architecture; this is now assigned to Slice 44
+
+Task breakdown:
+
+1. Trust state model and persistence
+- define a normalized trust lifecycle state machine for `trusted`, `rotated`, `revoked`, `untrusted`, `needs_attention`, and any transient overlap-window state needed for signer rotation
+- move lifecycle actions that matter operationally out of implicit registration side effects and into auditable records with actor, reason, previous state, next state, and timestamps
+- preserve backwards compatibility with existing device metadata while adding explicit records or projections where the UI/API need cleaner trust history
+- add persistence tests for state transitions, idempotency, revoked-key lockout, and legacy-row normalization
+
+2. Orchestrator signer rotation
+- add admin-visible current/next orchestrator signer metadata and overlap-window semantics
+- support a rotation flow where edges can trust both the current and staged next signer before the API starts signing challenges with the new key
+- surface rotation readiness: which devices have refreshed trust bundles, which are stale, and which are still registering against the old signer
+- document the operator runbook for staging, activating, and retiring orchestrator signing keys
+
+3. Edge revocation and remediation
+- add explicit admin actions to revoke an edge key/device with an auditable reason
+- make revoked devices unable to receive dispatches, approvals, or auto-selection even if they continue to heartbeat
+- add explicit admin resolution flows for clearing `revoked` or `needs_attention` states; do not silently self-heal sensitive states through registration alone
+- ensure revocation and resolution publish realtime UI events immediately
+
+4. Multi-edge enrollment
+- define the intended model for primary and additional edge devices, including unique device ids, unique signing keys, display names, and capability/repository exposure
+- prevent accidental re-use of a primary device identity or signing key during additional-edge enrollment
+- update UI enrollment guidance so an operator can tell whether they are adding a new edge, rotating an existing edge key, or recovering a device
+- add tests for duplicate device id/key cases and safe additional-edge registration
+
+5. Trust-aware dispatch and selection
+- make dispatch eligibility trust-aware in every path: conversational drafts, manual jobs, approval actions, repository/device selectors, and any fallback auto-selection logic
+- show trust status and dispatch eligibility next to device choices without requiring the operator to open a separate detail view
+- ensure trust changes invalidate stale selected-device state in the UI through realtime updates
+- add API and UI tests proving revoked/untrusted devices cannot be selected or dispatched
+
+6. Edge diagnostics and TUI trust messaging
+- classify registration failures so the edge/TUI can distinguish revoked device, unknown orchestrator signer, stale trust bundle, bad edge key, missing secret file, and plain connectivity failure
+- write actionable diagnostic text into local status/TUI views without exposing secret material
+- keep edge heartbeats as the presence/trust-refresh mechanism, but make their failure modes more intelligible to the operator
+- add focused edge tests for diagnostic classification if the API exposes structured failure responses
+
+Out of scope:
+- removing browser polling or changing the orchestrator realtime transport; this moves to Slice 43
+- encrypted local secret stores or OS keychain integration for edge secrets
+- signed Windows installer distribution; this remains a later release-hardening candidate
+- provider-specific Gmail, Calendar, or Drive integrations
+
+Validation plan:
+- `elowen-api`: `cargo fmt --check`, `cargo check`, `cargo test --quiet`, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- `elowen-ui`: `cargo fmt --check`, `cargo test`, `cargo clippy --all-targets -- -D warnings`, and focused UI tests for trust state rendering and trust-aware dispatch selection if UI code changes
+- `elowen-edge`: focused tests for trust diagnostic classification plus `cargo fmt --check`, `cargo check`, `cargo test --quiet`, and `cargo clippy --all-targets -- -D warnings` if edge code changes
+- `elowen-platform`: deployment/docs validation for any new env, signer, or runbook changes
+- manual UAT: revoke an active edge and confirm dispatch lockout; rotate trust material through an overlap window; enroll a second edge; resolve a needs-attention device through an explicit admin action; verify edge diagnostics for revoked/stale/bad-key cases
+
+Why this slice exists:
+- Slice 28 and Slice 34 established trusted registration, and Slice 41 made edge operations usable. The remaining trust work is now about lifecycle completeness: intentional rotation, revocation, recovery, multi-edge operations, and UI-visible remediation.
+
+### Slice 43 - Realtime-Only Orchestrator UI
+
+Status:
+- planned
+
+Assigned scope:
+- remove the remaining orchestrator UI polling fallback so thread, job, approval, device, note, repository, and trust updates flow through an authenticated asynchronous realtime channel plus explicit user-initiated fetches only
+- be thoughtful about allowing user interaction to drive data fetches while relying on asynchronous communication with Leptos islands for updates that originate from edge clients and attached services
+- tighten the API/UI contract around realtime delivery so stale state, reconnects, authorization failures, and revoked-device transitions are represented intentionally rather than hidden behind periodic polling
+- preserve edge heartbeats, explicit availability probes, and local edge status JSON; this slice removes browser-side timer polling, not service-side presence or probe behavior
+
+Task breakdown:
+
+1. Realtime transport decision for Leptos islands
+- inventory current browser polling and current `EventSource`/SSE update handling across threads, jobs, messages, approvals, devices, repositories, notes, and trust state
+- decide whether the post-Slice-42 UI should keep authenticated SSE as the one-way service-update channel or move to WebSocket for Leptos island coordination; choose WebSocket only if bidirectional island-level coordination is actually needed beyond normal HTTP actions
+- define the event envelope shared by API and UI islands: event id/sequence, resource kind, resource id, action, server timestamp, and optional compact payload
+- define reconnect/catch-up behavior so missed events are repaired by targeted fetches rather than periodic polling
+
+2. User-driven fetch model
+- keep user-initiated data fetches as first-class behavior: selecting a thread, opening a job, changing filters, opening device details, pressing refresh, signing in, and returning from a disconnected state may call HTTP endpoints directly
+- remove automatic timer-driven background polling from the normal UI path
+- make explicit refresh buttons or stale-state banners available where the operator needs agency after realtime disconnects
+- avoid refetching whole app state when a targeted resource fetch or event payload can update the relevant island
+
+3. Realtime-originated updates from edge and attached services
+- ensure edge-originated events, job lifecycle events, approvals, device heartbeats/registration changes, trust changes, note promotions, and attached-service updates all publish the realtime events expected by the UI
+- route events to the smallest affected Leptos islands instead of treating every event as a full-app invalidation
+- represent disconnected, reconnecting, unauthorized, and stale realtime states visibly in the UI
+- ensure authorization failures close or downgrade the realtime channel rather than causing silent polling recovery
+
+4. Polling removal and regression protection
+- remove interval/timer-based browser polling for threads, jobs, messages, approvals, devices, repositories, notes, and trust state
+- update browser automation to assert that normal operation makes no unexpected periodic polling requests
+- add tests for user-driven fetches so legitimate clicks, selections, and explicit refreshes are not mistaken for polling regressions
+- test event delivery for job completion, approval creation/resolution, device registration heartbeat updates, trust revocation, note promotion, and thread message creation
+- test degraded mode by interrupting the realtime channel and confirming the UI shows state honestly without silently resuming polling
+
+Out of scope:
+- replacing local edge registration heartbeats; those remain the edge presence and trust-refresh mechanism
+- replacing active device availability probes; probes remain explicit request/reply checks for job eligibility
+- implementing new trust lifecycle semantics beyond the Slice 42 model
+- provider-specific Gmail, Calendar, or Drive integrations
+
+Validation plan:
+- `elowen-api`: realtime event contract tests plus `cargo fmt --check`, `cargo check`, `cargo test --quiet`, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- `elowen-ui`: `cargo fmt --check`, `cargo test`, `cargo clippy --all-targets -- -D warnings`, and browser automation proving realtime updates, user-driven fetches, and no timer-driven polling
+- manual UAT: create messages/jobs/approvals/notes/device trust changes from separate origins, confirm island-level updates arrive asynchronously; interrupt the realtime channel and confirm visible degraded state without silent polling; restore realtime and confirm catch-up behavior
+
+Why this slice exists:
+- The UI has carried polling as a safety net since the realtime system was young. Browser automation and authenticated realtime delivery are now mature enough that keeping polling in the normal path creates duplicate state machinery, masks realtime failures, and makes edge/service-originated updates harder to reason about.
+
+### Slice 44 - Secrets And Key Material Hardening
+
+Status:
+- planned
+
+Assigned scope:
+- move beyond plaintext local secret files as the long-term edge/orchestrator key-material posture while preserving the Slice 41/42 TOML path-based setup as a migration-compatible baseline
+- keep private key material out of source control, logs, TUI displays, and normal database rows; continue to show only public key ids and fingerprints in UI/TUI surfaces
+- make the secure path practical on Windows desktops, Linux/VPS hosts, and containerized deployments without weakening the default self-hosted security model
+- keep Slice 43 focused on realtime/polling cleanup; this slice is about key storage, secret loading, rotation ergonomics, and operator recovery
+
+Task breakdown:
+
+1. Edge secret storage backends
+- add a Windows backend for edge private key material using DPAPI-protected local storage or Windows Credential Manager
+- add a Linux backend plan for service-hosted edge secrets, prioritizing tightly permissioned files and optional `systemd-creds` support where available
+- keep local plaintext secret files as an explicit compatibility backend, but label it clearly in diagnostics and docs
+- add config fields or a small secret-provider abstraction so TOML can reference `file`, `windows-credential`, `dpapi`, or future provider-backed material without changing trust registration logic
+
+2. Orchestrator signer secret loading
+- support orchestrator signing private keys from mounted secret files in addition to env variables
+- document Docker Compose, VPS, and Kubernetes secret mounting patterns for orchestrator signer keys
+- ensure only public signer lifecycle metadata remains in the database
+- validate that signer stage/activate/retire flows continue to operate on public metadata while private keys stay outside persistence
+
+3. TUI and operator diagnostics
+- show the configured secret storage backend, key id/fingerprint, and health status without exposing private key material
+- distinguish insecure/dev override modes, plaintext compatibility mode, OS-protected mode, missing secret, unreadable secret, and stale trust bundle cases
+- provide guided remediation text for migrating a plaintext edge key into the preferred local backend
+- keep “show/copy private key” out of the TUI
+
+4. Migration and recovery
+- add migration commands to import existing `secrets/edge-signing-key.txt` material into the selected backend
+- support safe edge key rotation using the new backend while retaining previous-key proof support from Slice 42
+- define recovery runbooks for lost local secrets, revoked devices, cleared revocations, and fresh re-enrollment
+- preserve a manual emergency path for single-operator self-hosted deployments
+
+5. Container and VPS hardening
+- replace the UAT-only broad-permission workaround with documented Docker/Kubernetes secret paths where possible
+- keep `ELOWEN_EDGE_ALLOW_BROAD_SECRET_PERMISSIONS` as an explicit dev/test escape hatch, not a production default
+- make compose examples use secret mounts or generated local files with the narrowest practical permissions per platform
+- update VPS deployment docs to separate public trust bundles from private key material and to clarify which files may be world-readable
+
+Validation plan:
+- `elowen-edge`: backend unit tests, permission tests, migration tests, TUI diagnostic tests, `cargo fmt --check`, `cargo check`, `cargo test --quiet`, `cargo clippy --all-targets -- -D warnings`, and `cargo doc --no-deps`
+- `elowen-api`: signer secret-file loading tests plus the standard Rust validation suite if orchestrator config changes
+- `elowen-platform`: docs and compose/VPS example validation for secret mounts and migration runbooks
+- manual UAT: Windows edge imports a plaintext key into protected storage and registers; Linux/container edge runs from mounted secrets; orchestrator loads signer keys from secret files; rotation/revocation/recovery still match Slice 42 behavior; TUI never exposes private material
+
+Out of scope:
+- enterprise KMS/HSM integration
+- multi-user hosted secret administration
+- encrypted application database storage for private signing keys
+- signed Windows installer distribution
+- polling/realtime transport cleanup, which remains Slice 43
+
+Why this slice exists:
+- Slice 41 and Slice 42 intentionally used local secret files as the practical self-hosted baseline. Clean-stack UAT showed that this is workable but not the final security posture, especially across Windows hosts, Linux containers, VPS deployments, and operator recovery flows.
